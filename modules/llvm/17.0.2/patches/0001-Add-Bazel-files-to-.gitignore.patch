@@ -1,0 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Alexander Khabarov <alexander.khabarov@arm.com>
+Date: Mon, 16 Oct 2023 14:35:45 +0000
+Subject: [PATCH] Add Bazel files to .gitignore
+
+---
+ .gitignore | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/.gitignore b/.gitignore
+index eb693232..2d00665c 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -65,3 +65,11 @@ docs/_build
+ .sw?
+ #OS X specific files.
+ .DS_store
++
++#==============================================================================
++#
++# Bazel paths to ignore
++#==============================================================================
++.bazelrc
++.bazelversion
++/bazel-*

@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Alexander Khabarov <alexander.khabarov@arm.com>
+Date: Mon, 16 Oct 2023 16:48:32 +0000
+Subject: [PATCH] Guard against empty workspace root
+
+Default to `"."` as in `mlir/tblgen.bzl`.
+---
+ tblgen.bzl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tblgen.bzl b/tblgen.bzl
+index 950e5b59..838002f4 100644
+--- a/tblgen.bzl
++++ b/tblgen.bzl
+@@ -35,7 +35,7 @@ def gentbl(
+       tblgen_args: Extra arguments string to pass to the tblgen binary.
+       **kwargs: Keyword arguments to pass to subsidiary cc_library() rule.
+     """
+-    llvm_project_execroot_path = Label("//:tblgen.bzl").workspace_root
++    llvm_project_execroot_path = Label("//:tblgen.bzl").workspace_root or "."
+ 
+     if td_file not in td_srcs:
+         td_srcs += [td_file]

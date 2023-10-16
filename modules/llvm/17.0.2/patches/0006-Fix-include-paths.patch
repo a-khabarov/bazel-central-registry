@@ -1,0 +1,1396 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Alexander Khabarov <alexander.khabarov@arm.com>
+Date: Mon, 16 Oct 2023 20:06:05 +0000
+Subject: [PATCH] Fix include paths
+
+Run `sed 's|llvm/include|include|g' -i` for every file.
+
+Manually fix the URI in `docs/CodingStandards.rst`.
+---
+ docs/CMake.rst                                |  2 +-
+ docs/CodingStandards.rst                      |  2 +-
+ docs/ExtendingLLVM.rst                        | 20 +++++++++----------
+ docs/GettingStarted.rst                       | 14 ++++++-------
+ docs/TypeMetadata.rst                         |  2 +-
+ docs/WritingAnLLVMNewPMPass.rst               |  2 +-
+ docs/tutorial/BuildingAJIT2.rst               |  2 +-
+ include/llvm/Demangle/README.txt              |  2 +-
+ include/llvm/ExecutionEngine/JITSymbol.h      |  2 +-
+ include/llvm/MC/MCSchedule.h                  |  2 +-
+ include/llvm/ProfileData/InstrProfData.inc    |  2 +-
+ include/llvm/Target/TargetSchedule.td         |  2 +-
+ tblgen.bzl                                    |  2 +-
+ test/CodeGen/PowerPC/bitcast-peephole.mir     |  2 +-
+ .../CodeGen/PowerPC/expand-contiguous-isel.ll |  2 +-
+ utils/extract_symbols.py                      |  2 +-
+ utils/gn/build/BUILD.gn                       |  4 ++--
+ .../secondary/bolt/tools/merge-fdata/BUILD.gn |  2 +-
+ .../clangd/unittests/BUILD.gn                 |  2 +-
+ utils/gn/secondary/clang/lib/Basic/BUILD.gn   |  4 ++--
+ utils/gn/secondary/clang/lib/Driver/BUILD.gn  |  2 +-
+ .../gn/secondary/clang/lib/Frontend/BUILD.gn  |  2 +-
+ utils/gn/secondary/clang/test/BUILD.gn        |  2 +-
+ .../gn/secondary/clang/tools/driver/BUILD.gn  |  2 +-
+ .../secondary/clang/tools/libclang/BUILD.gn   |  2 +-
+ .../llvm/include/llvm/CodeGen/BUILD.gn        |  2 +-
+ .../llvm/include/llvm/Config/BUILD.gn         |  2 +-
+ .../llvm/include/llvm/Support/BUILD.gn        |  2 +-
+ utils/gn/secondary/llvm/lib/Analysis/BUILD.gn |  4 ++--
+ .../llvm/lib/Bitcode/Reader/BUILD.gn          |  2 +-
+ .../llvm/lib/Bitcode/Writer/BUILD.gn          |  2 +-
+ utils/gn/secondary/llvm/lib/CodeGen/BUILD.gn  |  8 ++++----
+ .../llvm/lib/CodeGen/GlobalISel/BUILD.gn      |  4 ++--
+ .../secondary/llvm/lib/DebugInfo/PDB/BUILD.gn |  2 +-
+ .../llvm/lib/DebugInfo/Symbolize/BUILD.gn     |  2 +-
+ .../llvm/lib/ExecutionEngine/BUILD.gn         |  2 +-
+ .../lib/ExecutionEngine/Interpreter/BUILD.gn  |  2 +-
+ .../lib/ExecutionEngine/RuntimeDyld/BUILD.gn  |  2 +-
+ .../llvm/lib/Frontend/OpenACC/BUILD.gn        |  2 +-
+ .../llvm/lib/Frontend/OpenMP/BUILD.gn         |  2 +-
+ utils/gn/secondary/llvm/lib/IR/BUILD.gn       |  6 +++---
+ utils/gn/secondary/llvm/lib/LTO/BUILD.gn      |  2 +-
+ .../gn/secondary/llvm/lib/LineEditor/BUILD.gn |  2 +-
+ utils/gn/secondary/llvm/lib/MC/BUILD.gn       |  4 ++--
+ utils/gn/secondary/llvm/lib/Object/BUILD.gn   |  4 ++--
+ .../llvm/lib/Support/BLAKE3/BUILD.gn          |  2 +-
+ utils/gn/secondary/llvm/lib/Support/BUILD.gn  | 10 +++++-----
+ .../gn/secondary/llvm/lib/Target/ARM/BUILD.gn |  2 +-
+ .../gn/secondary/llvm/lib/Target/AVR/BUILD.gn |  2 +-
+ .../gn/secondary/llvm/lib/Target/BPF/BUILD.gn |  2 +-
+ utils/gn/secondary/llvm/lib/Target/BUILD.gn   |  2 +-
+ .../llvm/lib/Target/Hexagon/BUILD.gn          |  2 +-
+ .../secondary/llvm/lib/Target/Lanai/BUILD.gn  |  2 +-
+ .../llvm/lib/Target/LoongArch/BUILD.gn        |  2 +-
+ .../secondary/llvm/lib/Target/Mips/BUILD.gn   |  2 +-
+ .../secondary/llvm/lib/Target/NVPTX/BUILD.gn  |  2 +-
+ .../llvm/lib/Target/PowerPC/BUILD.gn          |  2 +-
+ .../secondary/llvm/lib/Target/RISCV/BUILD.gn  |  2 +-
+ .../secondary/llvm/lib/Target/Sparc/BUILD.gn  |  2 +-
+ .../llvm/lib/Target/SystemZ/BUILD.gn          |  2 +-
+ .../llvm/lib/Target/WebAssembly/BUILD.gn      |  2 +-
+ .../gn/secondary/llvm/lib/Target/X86/BUILD.gn |  2 +-
+ .../secondary/llvm/lib/TargetParser/BUILD.gn  |  2 +-
+ .../llvm/lib/Transforms/Coroutines/BUILD.gn   |  2 +-
+ .../llvm/lib/Transforms/Hello/BUILD.gn        |  2 +-
+ .../llvm/lib/Transforms/Scalar/BUILD.gn       |  2 +-
+ .../llvm/lib/WindowsManifest/BUILD.gn         |  2 +-
+ utils/gn/secondary/llvm/test/BUILD.gn         |  2 +-
+ .../llvm/tools/bugpoint-passes/BUILD.gn       |  2 +-
+ .../gn/secondary/llvm/tools/bugpoint/BUILD.gn |  4 ++--
+ utils/gn/secondary/llvm/tools/lli/BUILD.gn    |  2 +-
+ .../secondary/llvm/tools/llvm-config/BUILD.gn |  4 ++--
+ .../gn/secondary/llvm/tools/llvm-cov/BUILD.gn |  2 +-
+ .../llvm/tools/llvm-objdump/BUILD.gn          |  2 +-
+ utils/gn/secondary/llvm/tools/opt/BUILD.gn    |  2 +-
+ .../gn/secondary/llvm/unittests/ADT/BUILD.gn  |  2 +-
+ .../Analysis/InlineAdvisorPlugin/BUILD.gn     |  2 +-
+ .../Analysis/InlineOrderPlugin/BUILD.gn       |  2 +-
+ .../Passes/PassBuilderBindings/BUILD.gn       |  2 +-
+ .../llvm/unittests/Passes/Plugins/BUILD.gn    |  2 +-
+ .../Passes/Plugins/DoublerPlugin/BUILD.gn     |  2 +-
+ .../Passes/Plugins/TestPlugin/BUILD.gn        |  2 +-
+ .../unittests/Support/DynamicLibrary/BUILD.gn |  2 +-
+ .../unittests/tools/llvm-profgen/BUILD.gn     |  2 +-
+ .../gn/secondary/llvm/utils/TableGen/BUILD.gn |  2 +-
+ .../llvm/utils/TableGen/GlobalISel/BUILD.gn   |  2 +-
+ .../llvm/utils/TableGen/tablegen.gni          |  2 +-
+ 87 files changed, 119 insertions(+), 119 deletions(-)
+
+diff --git a/docs/CMake.rst b/docs/CMake.rst
+index c566b590..d8269104 100644
+--- a/docs/CMake.rst
++++ b/docs/CMake.rst
+@@ -330,7 +330,7 @@ enabled sub-projects. Nearly all of these variable names begin with
+ **LLVM_APPEND_VC_REV**:BOOL
+   Embed version control revision info (Git revision id).
+   The version info is provided by the ``LLVM_REVISION`` macro in
+-  ``llvm/include/llvm/Support/VCSRevision.h``. Developers using git who don't
++  ``include/llvm/Support/VCSRevision.h``. Developers using git who don't
+   need revision info can disable this option to avoid re-linking most binaries
+   after a branch switch. Defaults to ON.
+ 
+diff --git a/docs/CodingStandards.rst b/docs/CodingStandards.rst
+index 9d87142b..95294401 100644
+--- a/docs/CodingStandards.rst
++++ b/docs/CodingStandards.rst
+@@ -185,7 +185,7 @@ Header Guard
+ The header file's guard should be the all-caps path that a user of this header
+ would #include, using '_' instead of path separator and extension marker.
+ For example, the header file
+-``llvm/include/llvm/Analysis/Utils/Local.h`` would be ``#include``-ed as
++``include/llvm/Analysis/Utils/Local.h`` would be ``#include``-ed as
+ ``#include "llvm/Analysis/Utils/Local.h"``, so its guard is
+ ``LLVM_ANALYSIS_UTILS_LOCAL_H``.
+ 
+diff --git a/docs/ExtendingLLVM.rst b/docs/ExtendingLLVM.rst
+index 12372996..bd347b0c 100644
+--- a/docs/ExtendingLLVM.rst
++++ b/docs/ExtendingLLVM.rst
+@@ -45,7 +45,7 @@ function and then be turned into an instruction if warranted.
+    what the restrictions are.  Talk to other people about it so that you are
+    sure it's a good idea.
+ 
+-#. ``llvm/include/llvm/IR/Intrinsics*.td``:
++#. ``include/llvm/IR/Intrinsics*.td``:
+ 
+    Add an entry for your intrinsic.  Describe its memory access
+    characteristics for optimization (this controls whether it will be
+@@ -180,15 +180,15 @@ Adding a new instruction
+   to maintain compatibility with the previous version. Only add an instruction
+   if it is absolutely necessary.
+ 
+-#. ``llvm/include/llvm/IR/Instruction.def``:
++#. ``include/llvm/IR/Instruction.def``:
+ 
+    add a number for your instruction and an enum name
+ 
+-#. ``llvm/include/llvm/IR/Instructions.h``:
++#. ``include/llvm/IR/Instructions.h``:
+ 
+    add a definition for the class that will represent your instruction
+ 
+-#. ``llvm/include/llvm/IR/InstVisitor.h``:
++#. ``include/llvm/IR/InstVisitor.h``:
+ 
+    add a prototype for a visitor to your new instruction type
+ 
+@@ -215,7 +215,7 @@ Adding a new instruction
+ 
+ #. ``llvm/lib/IR/Instructions.cpp``:
+ 
+-   implement the class you defined in ``llvm/include/llvm/Instructions.h``
++   implement the class you defined in ``include/llvm/Instructions.h``
+ 
+ #. Test your instruction
+ 
+@@ -242,7 +242,7 @@ Adding a new type
+ Adding a fundamental type
+ -------------------------
+ 
+-#. ``llvm/include/llvm/IR/Type.h``:
++#. ``include/llvm/IR/Type.h``:
+ 
+    add enum for the new type; add static ``Type*`` for this type
+ 
+@@ -250,7 +250,7 @@ Adding a fundamental type
+ 
+    add mapping from ``TypeID`` => ``Type*``; initialize the static ``Type*``
+ 
+-#. ``llvm/include/llvm-c/Core.h`` and ``llvm/lib/IR/Core.cpp``:
++#. ``include/llvm-c/Core.h`` and ``llvm/lib/IR/Core.cpp``:
+ 
+    add enum ``LLVMTypeKind`` and modify
+    ``LLVMTypeKind LLVMGetTypeKind(LLVMTypeRef Ty)`` for the new type
+@@ -278,11 +278,11 @@ Adding a fundamental type
+ Adding a derived type
+ ---------------------
+ 
+-#. ``llvm/include/llvm/IR/Type.h``:
++#. ``include/llvm/IR/Type.h``:
+ 
+    add enum for the new type; add a forward declaration of the type also
+ 
+-#. ``llvm/include/llvm/IR/DerivedTypes.h``:
++#. ``include/llvm/IR/DerivedTypes.h``:
+ 
+    add new class to represent new class in the hierarchy; add forward
+    declaration to the TypeMap value type
+@@ -291,7 +291,7 @@ Adding a derived type
+ 
+    add support for derived type, notably `enum TypeID` and `is`, `get` methods.
+ 
+-#. ``llvm/include/llvm-c/Core.h`` and ``llvm/lib/IR/Core.cpp``:
++#. ``include/llvm-c/Core.h`` and ``llvm/lib/IR/Core.cpp``:
+ 
+    add enum ``LLVMTypeKind`` and modify
+    `LLVMTypeKind LLVMGetTypeKind(LLVMTypeRef Ty)` for the new type
+diff --git a/docs/GettingStarted.rst b/docs/GettingStarted.rst
+index 048d5216..cc1c2439 100644
+--- a/docs/GettingStarted.rst
++++ b/docs/GettingStarted.rst
+@@ -579,7 +579,7 @@ Local LLVM Configuration
+ Once checked out repository, the LLVM suite source code must be configured
+ before being built. This process uses CMake.  Unlinke the normal ``configure``
+ script, CMake generates the build files in whatever format you request as well
+-as various ``*.inc`` files, and ``llvm/include/llvm/Config/config.h.cmake``.
++as various ``*.inc`` files, and ``include/llvm/Config/config.h.cmake``.
+ 
+ Variables are passed to ``cmake`` on the command line using the format
+ ``-D<variable name>=<value>``. The following variables are some common options
+@@ -867,23 +867,23 @@ Generates system build files.
+   ORC JIT APIs interact with other parts of LLVM. It also, teaches how to
+   recombine them to build a custom JIT that is suited to your use-case.
+ 
+-``llvm/include``
++``include``
+ ----------------
+ 
+ Public header files exported from the LLVM library. The three main subdirectories:
+ 
+-``llvm/include/llvm``
++``include/llvm``
+ 
+   All LLVM-specific header files, and  subdirectories for different portions of
+   LLVM: ``Analysis``, ``CodeGen``, ``Target``, ``Transforms``, etc...
+ 
+-``llvm/include/llvm/Support``
++``include/llvm/Support``
+ 
+   Generic support libraries provided with LLVM but not necessarily specific to
+   LLVM. For example, some C++ STL utilities and a Command Line option processing
+   library store header files here.
+ 
+-``llvm/include/llvm/Config``
++``include/llvm/Config``
+ 
+   Header files configured by ``cmake``.  They wrap "standard" UNIX and
+   C header files.  Source code can include these header files which
+@@ -942,8 +942,8 @@ share code among the `tools`_.
+ 
+ ``llvm/lib/Support/``
+ 
+-  Source code that corresponding to the header files in ``llvm/include/ADT/``
+-  and ``llvm/include/Support/``.
++  Source code that corresponding to the header files in ``include/ADT/``
++  and ``include/Support/``.
+ 
+ ``llvm/bindings``
+ ----------------------
+diff --git a/docs/TypeMetadata.rst b/docs/TypeMetadata.rst
+index 5fa864dc..7488701a 100644
+--- a/docs/TypeMetadata.rst
++++ b/docs/TypeMetadata.rst
+@@ -223,7 +223,7 @@ efficiently to minimize the sizes of the underlying bitsets.
+       ret void
+     }
+ 
+-.. _GlobalLayoutBuilder: https://github.com/llvm/llvm-project/blob/main/llvm/include/llvm/Transforms/IPO/LowerTypeTests.h
++.. _GlobalLayoutBuilder: https://github.com/llvm/llvm-project/blob/main/include/llvm/Transforms/IPO/LowerTypeTests.h
+ 
+ ``!vcall_visibility`` Metadata
+ ==============================
+diff --git a/docs/WritingAnLLVMNewPMPass.rst b/docs/WritingAnLLVMNewPMPass.rst
+index 799863c7..7c70bdb1 100644
+--- a/docs/WritingAnLLVMNewPMPass.rst
++++ b/docs/WritingAnLLVMNewPMPass.rst
+@@ -70,7 +70,7 @@ Basic code required
+ Now that the build is setup for a new pass, we just have to write it.
+ 
+ First we need to define the pass in a header file. We'll create
+-``llvm/include/llvm/Transforms/Utils/HelloWorld.h``. The file should
++``include/llvm/Transforms/Utils/HelloWorld.h``. The file should
+ contain the following boilerplate:
+ 
+ .. code-block:: c++
+diff --git a/docs/tutorial/BuildingAJIT2.rst b/docs/tutorial/BuildingAJIT2.rst
+index b8d39766..d74917b6 100644
+--- a/docs/tutorial/BuildingAJIT2.rst
++++ b/docs/tutorial/BuildingAJIT2.rst
+@@ -190,7 +190,7 @@ can be implemented.
+   }
+ 
+ This is the whole definition of IRTransformLayer, from
+-``llvm/include/llvm/ExecutionEngine/Orc/IRTransformLayer.h`` and
++``include/llvm/ExecutionEngine/Orc/IRTransformLayer.h`` and
+ ``llvm/lib/ExecutionEngine/Orc/IRTransformLayer.cpp``.  This class is concerned
+ with two very simple jobs: (1) Running every IR Module that is emitted via this
+ layer through the transform function object, and (2) implementing the ORC
+diff --git a/include/llvm/Demangle/README.txt b/include/llvm/Demangle/README.txt
+index 76470f61..ff379ddf 100644
+--- a/include/llvm/Demangle/README.txt
++++ b/include/llvm/Demangle/README.txt
+@@ -15,7 +15,7 @@ Why are there multiple copies of the this library in the source tree?
+ ---------------------------------------------------------------------
+ 
+ The canonical sources are in libcxxabi/src/demangle and some of the
+-files are copied to llvm/include/llvm/Demangle.  The simple reason for
++files are copied to include/llvm/Demangle.  The simple reason for
+ this comes from before the monorepo, and both [sub]projects need to
+ demangle symbols, but neither can depend on each other.
+ 
+diff --git a/include/llvm/ExecutionEngine/JITSymbol.h b/include/llvm/ExecutionEngine/JITSymbol.h
+index 440e10cc..1b9eb79e 100644
+--- a/include/llvm/ExecutionEngine/JITSymbol.h
++++ b/include/llvm/ExecutionEngine/JITSymbol.h
+@@ -157,7 +157,7 @@ public:
+   /// callback execution will be delayed until they reach the ready state).
+   /// MaterializationSideEffectOnly symbols should only be queried using the
+   /// SymbolLookupFlags::WeaklyReferencedSymbol flag (see
+-  /// llvm/include/llvm/ExecutionEngine/Orc/Core.h).
++  /// include/llvm/ExecutionEngine/Orc/Core.h).
+   bool hasMaterializationSideEffectsOnly() const {
+     return (Flags & MaterializationSideEffectsOnly) ==
+            MaterializationSideEffectsOnly;
+diff --git a/include/llvm/MC/MCSchedule.h b/include/llvm/MC/MCSchedule.h
+index e6cf27ce..c9e72fca 100644
+--- a/include/llvm/MC/MCSchedule.h
++++ b/include/llvm/MC/MCSchedule.h
+@@ -315,7 +315,7 @@ struct MCSchedModel {
+ 
+   // Tells the MachineScheduler whether or not to track resource usage
+   // using intervals via ResourceSegments (see
+-  // llvm/include/llvm/CodeGen/MachineScheduler.h).
++  // include/llvm/CodeGen/MachineScheduler.h).
+   bool EnableIntervals;
+ 
+   unsigned ProcID;
+diff --git a/include/llvm/ProfileData/InstrProfData.inc b/include/llvm/ProfileData/InstrProfData.inc
+index 94261f47..5a811081 100644
+--- a/include/llvm/ProfileData/InstrProfData.inc
++++ b/include/llvm/ProfileData/InstrProfData.inc
+@@ -833,7 +833,7 @@ typedef struct InstrProfValueData {
+ /*
+  * Clz and Popcount. This code was copied from
+  * compiler-rt/lib/fuzzer/{FuzzerBuiltins.h,FuzzerBuiltinsMsvc.h} and
+- * llvm/include/llvm/Support/MathExtras.h.
++ * include/llvm/Support/MathExtras.h.
+  */
+ #if defined(_MSC_VER) && !defined(__clang__)
+ 
+diff --git a/include/llvm/Target/TargetSchedule.td b/include/llvm/Target/TargetSchedule.td
+index f5aa105e..9f1f6a21 100644
+--- a/include/llvm/Target/TargetSchedule.td
++++ b/include/llvm/Target/TargetSchedule.td
+@@ -120,7 +120,7 @@ class SchedMachineModel {
+ 
+   // Tells the MachineScheduler whether or not to track resource usage
+   // using intervals via ResourceSegments (see
+-  // llvm/include/llvm/CodeGen/MachineScheduler.h).
++  // include/llvm/CodeGen/MachineScheduler.h).
+   bit EnableIntervals = false;
+ }
+ 
+diff --git a/tblgen.bzl b/tblgen.bzl
+index ff5a18b4..950e5b59 100644
+--- a/tblgen.bzl
++++ b/tblgen.bzl
+@@ -47,7 +47,7 @@ def gentbl(
+             outs = [out],
+             tools = [tblgen],
+             message = "Generating code from table: %s" % td_file,
+-            cmd = (("$(location %s) -I %s/llvm/include " +
++            cmd = (("$(location %s) -I %s/include " +
+                     "-I %s/clang/include " +
+                     "-I $$(dirname $(location %s)) " +
+                     "%s $(location %s) %s -o $@") % (
+diff --git a/test/CodeGen/PowerPC/bitcast-peephole.mir b/test/CodeGen/PowerPC/bitcast-peephole.mir
+index 15238576..75fa1ae3 100644
+--- a/test/CodeGen/PowerPC/bitcast-peephole.mir
++++ b/test/CodeGen/PowerPC/bitcast-peephole.mir
+@@ -17,7 +17,7 @@ body:             |
+ ...
+ 
+ # This used to hit an assertion:
+-#   llvm/include/llvm/CodeGen/MachineInstr.h:417: const
++#   include/llvm/CodeGen/MachineInstr.h:417: const
+ #   llvm::MachineOperand &llvm::MachineInstr::getOperand(unsigned int)
+ #   const: Assertion `i < getNumOperands() && "getOperand() out of range!"' failed.
+ #
+diff --git a/test/CodeGen/PowerPC/expand-contiguous-isel.ll b/test/CodeGen/PowerPC/expand-contiguous-isel.ll
+index 15b7dc1a..4d9016ab 100644
+--- a/test/CodeGen/PowerPC/expand-contiguous-isel.ll
++++ b/test/CodeGen/PowerPC/expand-contiguous-isel.ll
+@@ -18,7 +18,7 @@ target triple = "powerpc64le-unknown-linux-gnu"
+ 
+ @.str = private unnamed_addr constant [3 x i8] c"]]\00", align 1
+ @.str.1 = private unnamed_addr constant [35 x i8] c"Index < Length && \22Invalid index!\22\00", align 1
+-@.str.2 = private unnamed_addr constant [50 x i8] c"/home/jtony/src/llvm/include/llvm/ADT/StringRef.h\00", align 1
++@.str.2 = private unnamed_addr constant [50 x i8] c"/home/jtony/src/include/llvm/ADT/StringRef.h\00", align 1
+ @__PRETTY_FUNCTION__._ZNK4llvm9StringRefixEm = private unnamed_addr constant [47 x i8] c"char llvm::StringRef::operator[](size_t) const\00", align 1
+ @.str.3 = private unnamed_addr constant [95 x i8] c"(data || length == 0) && \22StringRef cannot be built from a NULL argument with non-null length\22\00", align 1
+ @__PRETTY_FUNCTION__._ZN4llvm9StringRefC2EPKcm = private unnamed_addr constant [49 x i8] c"llvm::StringRef::StringRef(const char *, size_t)\00", align 1
+diff --git a/utils/extract_symbols.py b/utils/extract_symbols.py
+index 9238828d..29b73361 100755
+--- a/utils/extract_symbols.py
++++ b/utils/extract_symbols.py
+@@ -101,7 +101,7 @@ def should_keep_microsoft_symbol(symbol, calling_convention_decoration):
+     # namespace doesn't exist outside of that translation unit.
+     elif re.search("\?A(0x\w+)?@", symbol):
+         return None
+-    # Skip X86GenMnemonicTables functions, they are not exposed from llvm/include/.
++    # Skip X86GenMnemonicTables functions, they are not exposed from include/.
+     elif re.match("\?is[A-Z0-9]*@X86@llvm", symbol):
+         return None
+     # Keep mangled llvm:: and clang:: function symbols. How we detect these is a
+diff --git a/utils/gn/build/BUILD.gn b/utils/gn/build/BUILD.gn
+index 14e65c18..7579a882 100644
+--- a/utils/gn/build/BUILD.gn
++++ b/utils/gn/build/BUILD.gn
+@@ -463,8 +463,8 @@ config("thin_archive") {
+ 
+ config("llvm_code") {
+   include_dirs = [
+-    "//llvm/include",
+-    "$root_gen_dir/llvm/include",
++    "//include",
++    "$root_gen_dir/include",
+   ]
+   if (current_os != "win") {
+     cflags = [ "-fPIC" ]
+diff --git a/utils/gn/secondary/bolt/tools/merge-fdata/BUILD.gn b/utils/gn/secondary/bolt/tools/merge-fdata/BUILD.gn
+index e75e1248..6b6ee040 100644
+--- a/utils/gn/secondary/bolt/tools/merge-fdata/BUILD.gn
++++ b/utils/gn/secondary/bolt/tools/merge-fdata/BUILD.gn
+@@ -1,7 +1,7 @@
+ executable("merge-fdata") {
+   configs += [ "//llvm/utils/gn/build:bolt_code" ]
+   deps = [
+-    "//llvm/include/llvm/IR:public_tablegen",
++    "//include/llvm/IR:public_tablegen",
+     "//llvm/lib/Support",
+   ]
+   sources = [ "merge-fdata.cpp" ]
+diff --git a/utils/gn/secondary/clang-tools-extra/clangd/unittests/BUILD.gn b/utils/gn/secondary/clang-tools-extra/clangd/unittests/BUILD.gn
+index 6acea4d4..ccef3406 100644
+--- a/utils/gn/secondary/clang-tools-extra/clangd/unittests/BUILD.gn
++++ b/utils/gn/secondary/clang-tools-extra/clangd/unittests/BUILD.gn
+@@ -28,7 +28,7 @@ unittest("ClangdTests") {
+     "//clang/lib/Tooling/Core",
+     "//clang/lib/Tooling/Inclusions",
+     "//clang/lib/Tooling/Syntax",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Support",
+     "//llvm/lib/Testing/Annotations",
+     "//llvm/lib/Testing/Support",
+diff --git a/utils/gn/secondary/clang/lib/Basic/BUILD.gn b/utils/gn/secondary/clang/lib/Basic/BUILD.gn
+index fb0066ea..c5853fe3 100644
+--- a/utils/gn/secondary/clang/lib/Basic/BUILD.gn
++++ b/utils/gn/secondary/clang/lib/Basic/BUILD.gn
+@@ -41,7 +41,7 @@ static_library("Basic") {
+ 
+     # public_dep because public header OpenMPKinds.h includes generated
+     # OMP.h.inc.
+-    "//llvm/include/llvm/Frontend/OpenMP:public_tablegen",
++    "//include/llvm/Frontend/OpenMP:public_tablegen",
+   ]
+   deps = [
+     ":write_vcsversion",
+@@ -51,7 +51,7 @@ static_library("Basic") {
+     "//clang/include/clang/Config",
+     "//clang/include/clang/Sema:AttrParsedAttrKinds",
+     "//clang/include/clang/Sema:AttrSpellingListIndex",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Support",
+     "//llvm/lib/TargetParser",
+   ]
+diff --git a/utils/gn/secondary/clang/lib/Driver/BUILD.gn b/utils/gn/secondary/clang/lib/Driver/BUILD.gn
+index 9ae76c33..1fc60d44 100644
+--- a/utils/gn/secondary/clang/lib/Driver/BUILD.gn
++++ b/utils/gn/secondary/clang/lib/Driver/BUILD.gn
+@@ -14,7 +14,7 @@ static_library("Driver") {
+     # See the review thread of r311958 for details.
+     "//clang/include/clang/StaticAnalyzer/Checkers",
+     "//clang/lib/Basic",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/BinaryFormat",
+     "//llvm/lib/Option",
+     "//llvm/lib/Support",
+diff --git a/utils/gn/secondary/clang/lib/Frontend/BUILD.gn b/utils/gn/secondary/clang/lib/Frontend/BUILD.gn
+index 6d7c174a..8965f429 100644
+--- a/utils/gn/secondary/clang/lib/Frontend/BUILD.gn
++++ b/utils/gn/secondary/clang/lib/Frontend/BUILD.gn
+@@ -11,7 +11,7 @@ static_library("Frontend") {
+     "//clang/lib/Parse",
+     "//clang/lib/Sema",
+     "//clang/lib/Serialization",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Bitcode/Reader",
+     "//llvm/lib/Option",
+     "//llvm/lib/ProfileData",
+diff --git a/utils/gn/secondary/clang/test/BUILD.gn b/utils/gn/secondary/clang/test/BUILD.gn
+index 3e19ee5d..257be1c6 100644
+--- a/utils/gn/secondary/clang/test/BUILD.gn
++++ b/utils/gn/secondary/clang/test/BUILD.gn
+@@ -1,6 +1,6 @@
+ import("//clang/lib/ARCMigrate/enable.gni")
+ import("//clang/lib/StaticAnalyzer/Frontend/enable.gni")
+-import("//llvm/include/llvm/Config/config.gni")
++import("//include/llvm/Config/config.gni")
+ import("//llvm/lib/Target/targets.gni")
+ import("//llvm/triples.gni")
+ import("//llvm/utils/gn/build/libs/pthread/enable.gni")
+diff --git a/utils/gn/secondary/clang/tools/driver/BUILD.gn b/utils/gn/secondary/clang/tools/driver/BUILD.gn
+index bc50bdcf..c8a3a751 100644
+--- a/utils/gn/secondary/clang/tools/driver/BUILD.gn
++++ b/utils/gn/secondary/clang/tools/driver/BUILD.gn
+@@ -60,7 +60,7 @@ driver_executable("clang") {
+     "//clang/tools/clang-linker-wrapper",
+     "//clang/tools/clang-offload-bundler",
+     "//clang/tools/clang-offload-packager",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/IR",
+diff --git a/utils/gn/secondary/clang/tools/libclang/BUILD.gn b/utils/gn/secondary/clang/tools/libclang/BUILD.gn
+index 9ec7dc97..61c45618 100644
+--- a/utils/gn/secondary/clang/tools/libclang/BUILD.gn
++++ b/utils/gn/secondary/clang/tools/libclang/BUILD.gn
+@@ -35,7 +35,7 @@ shared_library("libclang") {
+     "//clang/lib/Lex",
+     "//clang/lib/Sema",
+     "//clang/lib/Tooling",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/IR",
+     "//llvm/lib/Support",
+     "//llvm/lib/Target:TargetsToBuild",
+diff --git a/utils/gn/secondary/llvm/include/llvm/CodeGen/BUILD.gn b/utils/gn/secondary/llvm/include/llvm/CodeGen/BUILD.gn
+index fdbe4f92..4c6816f7 100644
+--- a/utils/gn/secondary/llvm/include/llvm/CodeGen/BUILD.gn
++++ b/utils/gn/secondary/llvm/include/llvm/CodeGen/BUILD.gn
+@@ -2,6 +2,6 @@ import("//llvm/utils/TableGen/tablegen.gni")
+ 
+ tablegen("GenVT") {
+   args = [ "-gen-vt" ]
+-  td_file = "//llvm/include/llvm/CodeGen/ValueTypes.td"
++  td_file = "//include/llvm/CodeGen/ValueTypes.td"
+   tblgen_target = "//llvm/utils/TableGen:llvm-min-tblgen"
+ }
+diff --git a/utils/gn/secondary/llvm/include/llvm/Config/BUILD.gn b/utils/gn/secondary/llvm/include/llvm/Config/BUILD.gn
+index 174261ac..ceeeb455 100644
+--- a/utils/gn/secondary/llvm/include/llvm/Config/BUILD.gn
++++ b/utils/gn/secondary/llvm/include/llvm/Config/BUILD.gn
+@@ -1,4 +1,4 @@
+-import("//llvm/include/llvm/Config/config.gni")
++import("//include/llvm/Config/config.gni")
+ import("//llvm/lib/DebugInfo/PDB/enable_dia.gni")
+ import("//llvm/lib/Target/targets.gni")
+ import("//llvm/lib/Target/targets_with_asm_parsers.gni")
+diff --git a/utils/gn/secondary/llvm/include/llvm/Support/BUILD.gn b/utils/gn/secondary/llvm/include/llvm/Support/BUILD.gn
+index 33e23784..db793b55 100644
+--- a/utils/gn/secondary/llvm/include/llvm/Support/BUILD.gn
++++ b/utils/gn/secondary/llvm/include/llvm/Support/BUILD.gn
+@@ -10,7 +10,7 @@ write_vcsrevision("write_vcsrevision") {
+ # to have a declare_args() list with plugin names that people can override
+ # in their args.gn and with empty defaults (similar to llvm_targets_to_build).
+ action("write_extension_def") {
+-  script = "//llvm/utils/gn/secondary/llvm/include/llvm/Support/write_extension_def.py"
++  script = "//llvm/utils/gn/secondary/include/llvm/Support/write_extension_def.py"
+   outputs = [ "$target_gen_dir/Extension.def" ]
+ 
+   # If any extensions should be enabled, they'd be passed as additional
+diff --git a/utils/gn/secondary/llvm/lib/Analysis/BUILD.gn b/utils/gn/secondary/llvm/lib/Analysis/BUILD.gn
+index 2150dd02..9ac3a881 100644
+--- a/utils/gn/secondary/llvm/lib/Analysis/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Analysis/BUILD.gn
+@@ -2,10 +2,10 @@ static_library("Analysis") {
+   output_name = "LLVMAnalysis"
+   public_deps = [
+     # Must be a public_dep because Analysis's headers include llvm-config.h.
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+   ]
+   deps = [
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/BinaryFormat",
+     "//llvm/lib/IR",
+     "//llvm/lib/ProfileData",
+diff --git a/utils/gn/secondary/llvm/lib/Bitcode/Reader/BUILD.gn b/utils/gn/secondary/llvm/lib/Bitcode/Reader/BUILD.gn
+index 42f196c3..ad1df22a 100644
+--- a/utils/gn/secondary/llvm/lib/Bitcode/Reader/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Bitcode/Reader/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("Reader") {
+   output_name = "LLVMBitReader"
+   deps = [
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Bitstream/Reader",
+     "//llvm/lib/IR",
+     "//llvm/lib/Support",
+diff --git a/utils/gn/secondary/llvm/lib/Bitcode/Writer/BUILD.gn b/utils/gn/secondary/llvm/lib/Bitcode/Writer/BUILD.gn
+index 5b2f0524..2b7484e5 100644
+--- a/utils/gn/secondary/llvm/lib/Bitcode/Writer/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Bitcode/Writer/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("Writer") {
+   output_name = "LLVMBitWriter"
+   deps = [
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/IR",
+     "//llvm/lib/MC",
+diff --git a/utils/gn/secondary/llvm/lib/CodeGen/BUILD.gn b/utils/gn/secondary/llvm/lib/CodeGen/BUILD.gn
+index 418d5353..5b684cc7 100644
+--- a/utils/gn/secondary/llvm/lib/CodeGen/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/CodeGen/BUILD.gn
+@@ -2,10 +2,10 @@ static_library("CodeGenTypes") {
+   output_name = "LLVMCodeGenType"
+   public_deps = [
+     # Must be a public_dep because CodeGen's headers include llvm-config.h.
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+   ]
+   deps = [
+-    "//llvm/include/llvm/CodeGen:GenVT",
++    "//include/llvm/CodeGen:GenVT",
+     "//llvm/lib/Support",
+   ]
+   sources = [
+@@ -17,10 +17,10 @@ static_library("CodeGen") {
+   output_name = "LLVMCodeGen"
+   public_deps = [
+     # Must be a public_dep because CodeGen's headers include llvm-config.h.
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+   ]
+   deps = [
+-    "//llvm/include/llvm/CodeGen:GenVT",
++    "//include/llvm/CodeGen:GenVT",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/Bitcode/Reader",
+     "//llvm/lib/Bitcode/Writer",
+diff --git a/utils/gn/secondary/llvm/lib/CodeGen/GlobalISel/BUILD.gn b/utils/gn/secondary/llvm/lib/CodeGen/GlobalISel/BUILD.gn
+index 15766d4a..9a3a5b17 100644
+--- a/utils/gn/secondary/llvm/lib/CodeGen/GlobalISel/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/CodeGen/GlobalISel/BUILD.gn
+@@ -1,8 +1,8 @@
+ static_library("GlobalISel") {
+   output_name = "LLVMGlobalISel"
+   deps = [
+-    "//llvm/include/llvm/Config:config",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/IR",
+diff --git a/utils/gn/secondary/llvm/lib/DebugInfo/PDB/BUILD.gn b/utils/gn/secondary/llvm/lib/DebugInfo/PDB/BUILD.gn
+index 71cfa859..fac55db0 100644
+--- a/utils/gn/secondary/llvm/lib/DebugInfo/PDB/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/DebugInfo/PDB/BUILD.gn
+@@ -4,7 +4,7 @@ import("//llvm/utils/gn/build/sysroot.gni")
+ static_library("PDB") {
+   output_name = "LLVMDebugInfoPDB"
+   deps = [
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/DebugInfo/CodeView",
+     "//llvm/lib/DebugInfo/MSF",
+     "//llvm/lib/Object",
+diff --git a/utils/gn/secondary/llvm/lib/DebugInfo/Symbolize/BUILD.gn b/utils/gn/secondary/llvm/lib/DebugInfo/Symbolize/BUILD.gn
+index aa15a1bf..6ebdeee9 100644
+--- a/utils/gn/secondary/llvm/lib/DebugInfo/Symbolize/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/DebugInfo/Symbolize/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("Symbolize") {
+   output_name = "LLVMSymbolize"
+   deps = [
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/DebugInfo/BTF",
+     "//llvm/lib/DebugInfo/DWARF",
+     "//llvm/lib/DebugInfo/PDB",
+diff --git a/utils/gn/secondary/llvm/lib/ExecutionEngine/BUILD.gn b/utils/gn/secondary/llvm/lib/ExecutionEngine/BUILD.gn
+index 13e30c08..1018de0e 100644
+--- a/utils/gn/secondary/llvm/lib/ExecutionEngine/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/ExecutionEngine/BUILD.gn
+@@ -3,7 +3,7 @@ static_library("ExecutionEngine") {
+   public_deps = [
+     # Must be a public_dep because ExecutionEngine's headers include
+     # llvm-config.h.
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+   ]
+   deps = [
+     "//llvm/lib/ExecutionEngine/Orc/TargetProcess",
+diff --git a/utils/gn/secondary/llvm/lib/ExecutionEngine/Interpreter/BUILD.gn b/utils/gn/secondary/llvm/lib/ExecutionEngine/Interpreter/BUILD.gn
+index 81192ca3..219813e9 100644
+--- a/utils/gn/secondary/llvm/lib/ExecutionEngine/Interpreter/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/ExecutionEngine/Interpreter/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("Interpreter") {
+   output_name = "LLVMInterpreter"
+   deps = [
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/ExecutionEngine",
+     "//llvm/lib/IR",
+diff --git a/utils/gn/secondary/llvm/lib/ExecutionEngine/RuntimeDyld/BUILD.gn b/utils/gn/secondary/llvm/lib/ExecutionEngine/RuntimeDyld/BUILD.gn
+index 87b7d060..de547b98 100644
+--- a/utils/gn/secondary/llvm/lib/ExecutionEngine/RuntimeDyld/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/ExecutionEngine/RuntimeDyld/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("RuntimeDyld") {
+   output_name = "LLVMRuntimeDyld"
+   deps = [
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/MC",
+     "//llvm/lib/Object",
+     "//llvm/lib/Support",
+diff --git a/utils/gn/secondary/llvm/lib/Frontend/OpenACC/BUILD.gn b/utils/gn/secondary/llvm/lib/Frontend/OpenACC/BUILD.gn
+index 5e354a79..485f6f31 100644
+--- a/utils/gn/secondary/llvm/lib/Frontend/OpenACC/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Frontend/OpenACC/BUILD.gn
+@@ -1,6 +1,6 @@
+ static_library("OpenACC") {
+   output_name = "LLVMFrontendOpenACC"
+   deps = [ "//llvm/lib/Support" ]
+-  public_deps = [ "//llvm/include/llvm/Frontend/OpenACC:acc_gen" ]
++  public_deps = [ "//include/llvm/Frontend/OpenACC:acc_gen" ]
+   sources = [ "ACC.cpp" ]
+ }
+diff --git a/utils/gn/secondary/llvm/lib/Frontend/OpenMP/BUILD.gn b/utils/gn/secondary/llvm/lib/Frontend/OpenMP/BUILD.gn
+index ac183a8d..b734991b 100644
+--- a/utils/gn/secondary/llvm/lib/Frontend/OpenMP/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Frontend/OpenMP/BUILD.gn
+@@ -9,7 +9,7 @@ static_library("OpenMP") {
+     "//llvm/lib/Transforms/Scalar",
+     "//llvm/lib/Transforms/Utils",
+   ]
+-  public_deps = [ "//llvm/include/llvm/Frontend/OpenMP:public_tablegen" ]
++  public_deps = [ "//include/llvm/Frontend/OpenMP:public_tablegen" ]
+   sources = [
+     "OMP.cpp",
+     "OMPContext.cpp",
+diff --git a/utils/gn/secondary/llvm/lib/IR/BUILD.gn b/utils/gn/secondary/llvm/lib/IR/BUILD.gn
+index e062f0da..91f23a17 100644
+--- a/utils/gn/secondary/llvm/lib/IR/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/IR/BUILD.gn
+@@ -2,11 +2,11 @@ static_library("IR") {
+   output_name = "LLVMCore"
+   public_deps = [
+     # Must be public_dep because IR's public headers include llvm-config.h.
+-    "//llvm/include/llvm/Config:llvm-config",
+-    "//llvm/include/llvm/IR:public_tablegen",
++    "//include/llvm/Config:llvm-config",
++    "//include/llvm/IR:public_tablegen",
+   ]
+   deps = [
+-    "//llvm/include/llvm/IR:IntrinsicImpl",
++    "//include/llvm/IR:IntrinsicImpl",
+     "//llvm/lib/BinaryFormat",
+     "//llvm/lib/Remarks",
+     "//llvm/lib/Support",
+diff --git a/utils/gn/secondary/llvm/lib/LTO/BUILD.gn b/utils/gn/secondary/llvm/lib/LTO/BUILD.gn
+index 6c44a25b..6967fdc9 100644
+--- a/utils/gn/secondary/llvm/lib/LTO/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/LTO/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("LTO") {
+   output_name = "LLVMLTO"
+   deps = [
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/Bitcode/Reader",
+     "//llvm/lib/Bitcode/Writer",
+diff --git a/utils/gn/secondary/llvm/lib/LineEditor/BUILD.gn b/utils/gn/secondary/llvm/lib/LineEditor/BUILD.gn
+index 56fa79c7..e19988f0 100644
+--- a/utils/gn/secondary/llvm/lib/LineEditor/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/LineEditor/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("LineEditor") {
+   output_name = "LLVMLineEditor"
+   deps = [
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/Support",
+     "//llvm/utils/gn/build/libs/edit",
+   ]
+diff --git a/utils/gn/secondary/llvm/lib/MC/BUILD.gn b/utils/gn/secondary/llvm/lib/MC/BUILD.gn
+index 690eb440..bc696da9 100644
+--- a/utils/gn/secondary/llvm/lib/MC/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/MC/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("MC") {
+   output_name = "LLVMMC"
+   deps = [
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/BinaryFormat",
+     "//llvm/lib/DebugInfo/CodeView",
+     "//llvm/lib/Support",
+@@ -9,7 +9,7 @@ static_library("MC") {
+   ]
+   public_deps = [
+     # Must be a public_dep because MC's headers include llvm-config.h.
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+   ]
+   sources = [
+     "ConstantPools.cpp",
+diff --git a/utils/gn/secondary/llvm/lib/Object/BUILD.gn b/utils/gn/secondary/llvm/lib/Object/BUILD.gn
+index 3e381d97..f434480d 100644
+--- a/utils/gn/secondary/llvm/lib/Object/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Object/BUILD.gn
+@@ -1,8 +1,8 @@
+ static_library("Object") {
+   output_name = "LLVMObject"
+   deps = [
+-    "//llvm/include/llvm/Config:llvm-config",
+-    "//llvm/include/llvm/Support:write_vcsrevision",
++    "//include/llvm/Config:llvm-config",
++    "//include/llvm/Support:write_vcsrevision",
+     "//llvm/lib/BinaryFormat",
+     "//llvm/lib/Bitcode/Reader",
+     "//llvm/lib/IR",
+diff --git a/utils/gn/secondary/llvm/lib/Support/BLAKE3/BUILD.gn b/utils/gn/secondary/llvm/lib/Support/BLAKE3/BUILD.gn
+index e980be72..3cfa913d 100644
+--- a/utils/gn/secondary/llvm/lib/Support/BLAKE3/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Support/BLAKE3/BUILD.gn
+@@ -1,6 +1,6 @@
+ static_library("BLAKE3") {
+   output_name = "LLVMSupportBlake3"
+-  deps = [ "//llvm/include/llvm/Config:llvm-config" ]
++  deps = [ "//include/llvm/Config:llvm-config" ]
+   sources = [
+     "blake3.c",
+     "blake3_dispatch.c",
+diff --git a/utils/gn/secondary/llvm/lib/Support/BUILD.gn b/utils/gn/secondary/llvm/lib/Support/BUILD.gn
+index 989e805f..3eb274ce 100644
+--- a/utils/gn/secondary/llvm/lib/Support/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Support/BUILD.gn
+@@ -2,7 +2,7 @@ static_library("Support") {
+   output_name = "LLVMSupport"
+   deps = [
+     "BLAKE3",
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/Demangle",
+     "//llvm/utils/gn/build/libs/pthread",
+     "//llvm/utils/gn/build/libs/terminfo",
+@@ -18,14 +18,14 @@ static_library("Support") {
+     # no target in the gn build.  Since everything depends on Support, this
+     # public_dep does double duty of abi-breaking.h uses in public headers of
+     # both Support and ADT.
+-    "//llvm/include/llvm/Config:abi-breaking",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:abi-breaking",
++    "//include/llvm/Config:llvm-config",
+ 
+     # public_dep because public header TargetSelect.h includes these .def files.
+-    "//llvm/include/llvm/Config:write_target_def_files",
++    "//include/llvm/Config:write_target_def_files",
+ 
+     # public_dep because random targets assume its output exists.
+-    "//llvm/include/llvm/Support:write_extension_def",
++    "//include/llvm/Support:write_extension_def",
+   ]
+   include_dirs = [
+     "Unix",
+diff --git a/utils/gn/secondary/llvm/lib/Target/ARM/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/ARM/BUILD.gn
+index 10cb23c8..4a49f4b7 100644
+--- a/utils/gn/secondary/llvm/lib/Target/ARM/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/ARM/BUILD.gn
+@@ -47,7 +47,7 @@ static_library("LLVMARMCodeGen") {
+     "MCTargetDesc",
+     "TargetInfo",
+     "Utils",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+diff --git a/utils/gn/secondary/llvm/lib/Target/AVR/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/AVR/BUILD.gn
+index 28808d2c..7b0313b3 100644
+--- a/utils/gn/secondary/llvm/lib/Target/AVR/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/AVR/BUILD.gn
+@@ -18,7 +18,7 @@ static_library("LLVMAVRCodeGen") {
+     ":AVRGenDAGISel",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+     "//llvm/lib/CodeGen/SelectionDAG",
+diff --git a/utils/gn/secondary/llvm/lib/Target/BPF/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/BPF/BUILD.gn
+index 78819052..8cab748a 100644
+--- a/utils/gn/secondary/llvm/lib/Target/BPF/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/BPF/BUILD.gn
+@@ -46,7 +46,7 @@ static_library("LLVMBPFCodeGen") {
+     ":BPFGenRegisterBank",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+diff --git a/utils/gn/secondary/llvm/lib/Target/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/BUILD.gn
+index 01b004aa..c39e9c05 100644
+--- a/utils/gn/secondary/llvm/lib/Target/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/BUILD.gn
+@@ -36,7 +36,7 @@ static_library("Target") {
+     # declared in llvm-c/Target.h are defined in llvm/lib/Target, clients of
+     # it must depend on llvm/lib/Target, so add the public_dep for Targets.def
+     # here.
+-    "//llvm/include/llvm/Config:write_target_def_files",
++    "//include/llvm/Config:write_target_def_files",
+   ]
+   sources = [
+     "Target.cpp",
+diff --git a/utils/gn/secondary/llvm/lib/Target/Hexagon/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/Hexagon/BUILD.gn
+index c3cafe58..4978415a 100644
+--- a/utils/gn/secondary/llvm/lib/Target/Hexagon/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/Hexagon/BUILD.gn
+@@ -25,7 +25,7 @@ static_library("LLVMHexagonCodeGen") {
+     ":HexagonGenDFAPacketizer",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+diff --git a/utils/gn/secondary/llvm/lib/Target/Lanai/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/Lanai/BUILD.gn
+index 3b210a4f..1f3bbaa6 100644
+--- a/utils/gn/secondary/llvm/lib/Target/Lanai/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/Lanai/BUILD.gn
+@@ -18,7 +18,7 @@ static_library("LLVMLanaiCodeGen") {
+     ":LanaiGenDAGISel",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+diff --git a/utils/gn/secondary/llvm/lib/Target/LoongArch/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/LoongArch/BUILD.gn
+index 6e0efc54..0bcb65fb 100644
+--- a/utils/gn/secondary/llvm/lib/Target/LoongArch/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/LoongArch/BUILD.gn
+@@ -21,7 +21,7 @@ static_library("LLVMLoongArchCodeGen") {
+     "AsmParser:LoongArchGenAsmMatcher",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+diff --git a/utils/gn/secondary/llvm/lib/Target/Mips/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/Mips/BUILD.gn
+index 324046ec..b5509f02 100644
+--- a/utils/gn/secondary/llvm/lib/Target/Mips/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/Mips/BUILD.gn
+@@ -56,7 +56,7 @@ static_library("LLVMMipsCodeGen") {
+     ":MipsGenRegisterBank",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+diff --git a/utils/gn/secondary/llvm/lib/Target/NVPTX/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/NVPTX/BUILD.gn
+index 47c69d09..38e3a32a 100644
+--- a/utils/gn/secondary/llvm/lib/Target/NVPTX/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/NVPTX/BUILD.gn
+@@ -11,7 +11,7 @@ static_library("LLVMNVPTXCodeGen") {
+     ":NVPTXGenDAGISel",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+diff --git a/utils/gn/secondary/llvm/lib/Target/PowerPC/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/PowerPC/BUILD.gn
+index e0f63ccd..90487ab5 100644
+--- a/utils/gn/secondary/llvm/lib/Target/PowerPC/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/PowerPC/BUILD.gn
+@@ -39,7 +39,7 @@ static_library("LLVMPowerPCCodeGen") {
+     ":PPCGenRegisterBank",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+diff --git a/utils/gn/secondary/llvm/lib/Target/RISCV/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/RISCV/BUILD.gn
+index ee6dc0a0..4b05dd8c 100644
+--- a/utils/gn/secondary/llvm/lib/Target/RISCV/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/RISCV/BUILD.gn
+@@ -50,7 +50,7 @@ static_library("LLVMRISCVCodeGen") {
+     "AsmParser:RISCVGenAsmMatcher",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+     "//llvm/lib/CodeGen/GlobalISel",
+diff --git a/utils/gn/secondary/llvm/lib/Target/Sparc/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/Sparc/BUILD.gn
+index 904066e8..e09404cc 100644
+--- a/utils/gn/secondary/llvm/lib/Target/Sparc/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/Sparc/BUILD.gn
+@@ -18,7 +18,7 @@ static_library("LLVMSparcCodeGen") {
+     ":SparcGenDAGISel",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+     "//llvm/lib/CodeGen/SelectionDAG",
+diff --git a/utils/gn/secondary/llvm/lib/Target/SystemZ/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/SystemZ/BUILD.gn
+index a6b0997f..fa50dd85 100644
+--- a/utils/gn/secondary/llvm/lib/Target/SystemZ/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/SystemZ/BUILD.gn
+@@ -18,7 +18,7 @@ static_library("LLVMSystemZCodeGen") {
+     ":SystemZGenDAGISel",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+diff --git a/utils/gn/secondary/llvm/lib/Target/WebAssembly/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/WebAssembly/BUILD.gn
+index 6507ffe4..dd8c8f56 100644
+--- a/utils/gn/secondary/llvm/lib/Target/WebAssembly/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/WebAssembly/BUILD.gn
+@@ -18,7 +18,7 @@ static_library("LLVMWebAssemblyCodeGen") {
+     ":WebAssemblyGenFastISel",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+diff --git a/utils/gn/secondary/llvm/lib/Target/X86/BUILD.gn b/utils/gn/secondary/llvm/lib/Target/X86/BUILD.gn
+index 5f562977..a07c7618 100644
+--- a/utils/gn/secondary/llvm/lib/Target/X86/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Target/X86/BUILD.gn
+@@ -56,7 +56,7 @@ static_library("LLVMX86CodeGen") {
+     ":X86GenRegisterBank",
+     "MCTargetDesc",
+     "TargetInfo",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/CodeGen/AsmPrinter",
+diff --git a/utils/gn/secondary/llvm/lib/TargetParser/BUILD.gn b/utils/gn/secondary/llvm/lib/TargetParser/BUILD.gn
+index 1a91bb7e..911485de 100644
+--- a/utils/gn/secondary/llvm/lib/TargetParser/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/TargetParser/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("TargetParser") {
+   output_name = "LLVMTargetParser"
+   deps = [ "//llvm/lib/Support" ]
+-  public_deps = [ "//llvm/include/llvm/TargetParser:gen" ]
++  public_deps = [ "//include/llvm/TargetParser:gen" ]
+   include_dirs = [
+     "Unix",
+     "Windows",
+diff --git a/utils/gn/secondary/llvm/lib/Transforms/Coroutines/BUILD.gn b/utils/gn/secondary/llvm/lib/Transforms/Coroutines/BUILD.gn
+index 62e64bea..ea654120 100644
+--- a/utils/gn/secondary/llvm/lib/Transforms/Coroutines/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Transforms/Coroutines/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("Coroutines") {
+   output_name = "LLVMCoroutines"
+   deps = [
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/IR",
+     "//llvm/lib/Support",
+diff --git a/utils/gn/secondary/llvm/lib/Transforms/Hello/BUILD.gn b/utils/gn/secondary/llvm/lib/Transforms/Hello/BUILD.gn
+index a55d956a..97a7833f 100644
+--- a/utils/gn/secondary/llvm/lib/Transforms/Hello/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Transforms/Hello/BUILD.gn
+@@ -13,7 +13,7 @@ loadable_module("Hello") {
+ 
+     # LLVMHello doesn't want to link in any LLVM code, it just
+     # needs its headers.
+-    "//llvm/include/llvm/IR:public_tablegen",
++    "//include/llvm/IR:public_tablegen",
+   ]
+   sources = [ "Hello.cpp" ]
+ 
+diff --git a/utils/gn/secondary/llvm/lib/Transforms/Scalar/BUILD.gn b/utils/gn/secondary/llvm/lib/Transforms/Scalar/BUILD.gn
+index 58f7e05d..1a8b6755 100644
+--- a/utils/gn/secondary/llvm/lib/Transforms/Scalar/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/Transforms/Scalar/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("Scalar") {
+   output_name = "LLVMScalarOpts"
+   deps = [
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/IR",
+     "//llvm/lib/Support",
+diff --git a/utils/gn/secondary/llvm/lib/WindowsManifest/BUILD.gn b/utils/gn/secondary/llvm/lib/WindowsManifest/BUILD.gn
+index 3498a0ea..6568b817 100644
+--- a/utils/gn/secondary/llvm/lib/WindowsManifest/BUILD.gn
++++ b/utils/gn/secondary/llvm/lib/WindowsManifest/BUILD.gn
+@@ -1,7 +1,7 @@
+ static_library("WindowsManifest") {
+   output_name = "LLVMWindowsManifest"
+   deps = [
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/Support",
+     "//llvm/utils/gn/build/libs/xml",
+   ]
+diff --git a/utils/gn/secondary/llvm/test/BUILD.gn b/utils/gn/secondary/llvm/test/BUILD.gn
+index 2f46527b..aa40e0e0 100644
+--- a/utils/gn/secondary/llvm/test/BUILD.gn
++++ b/utils/gn/secondary/llvm/test/BUILD.gn
+@@ -1,4 +1,4 @@
+-import("//llvm/include/llvm/Config/config.gni")
++import("//include/llvm/Config/config.gni")
+ import("//llvm/lib/DebugInfo/PDB/enable_dia.gni")
+ import("//llvm/lib/Target/targets_string.gni")
+ import("//llvm/triples.gni")
+diff --git a/utils/gn/secondary/llvm/tools/bugpoint-passes/BUILD.gn b/utils/gn/secondary/llvm/tools/bugpoint-passes/BUILD.gn
+index 1f7580bb..7faba64c 100644
+--- a/utils/gn/secondary/llvm/tools/bugpoint-passes/BUILD.gn
++++ b/utils/gn/secondary/llvm/tools/bugpoint-passes/BUILD.gn
+@@ -13,7 +13,7 @@ loadable_module("bugpoint-passes") {
+ 
+     # BugpointPasses doesn't want to link in any LLVM code, it just
+     # needs its headers.
+-    "//llvm/include/llvm/IR:public_tablegen",
++    "//include/llvm/IR:public_tablegen",
+   ]
+   sources = [ "TestPasses.cpp" ]
+ 
+diff --git a/utils/gn/secondary/llvm/tools/bugpoint/BUILD.gn b/utils/gn/secondary/llvm/tools/bugpoint/BUILD.gn
+index e6a5d8ee..63e57014 100644
+--- a/utils/gn/secondary/llvm/tools/bugpoint/BUILD.gn
++++ b/utils/gn/secondary/llvm/tools/bugpoint/BUILD.gn
+@@ -1,7 +1,7 @@
+ executable("bugpoint") {
+   deps = [
+-    "//llvm/include/llvm/Config:config",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/Bitcode/Writer",
+     "//llvm/lib/CodeGen",
+diff --git a/utils/gn/secondary/llvm/tools/lli/BUILD.gn b/utils/gn/secondary/llvm/tools/lli/BUILD.gn
+index fcc8e190..6fbc6cd2 100644
+--- a/utils/gn/secondary/llvm/tools/lli/BUILD.gn
++++ b/utils/gn/secondary/llvm/tools/lli/BUILD.gn
+@@ -1,6 +1,6 @@
+ executable("lli") {
+   deps = [
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/AsmParser",
+     "//llvm/lib/Bitcode/Reader",
+     "//llvm/lib/CodeGen",
+diff --git a/utils/gn/secondary/llvm/tools/llvm-config/BUILD.gn b/utils/gn/secondary/llvm/tools/llvm-config/BUILD.gn
+index ad4ea08c..e5a1fc58 100644
+--- a/utils/gn/secondary/llvm/tools/llvm-config/BUILD.gn
++++ b/utils/gn/secondary/llvm/tools/llvm-config/BUILD.gn
+@@ -111,8 +111,8 @@ executable("llvm-config") {
+     ":BuildVariables.inc",
+     ":LibraryDependencies.inc",
+     ":write_extension_dependencies",
+-    "//llvm/include/llvm/Config:config",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Support",
+     "//llvm/lib/TargetParser",
+   ]
+diff --git a/utils/gn/secondary/llvm/tools/llvm-cov/BUILD.gn b/utils/gn/secondary/llvm/tools/llvm-cov/BUILD.gn
+index 066dd9a9..71ab3abe 100644
+--- a/utils/gn/secondary/llvm/tools/llvm-cov/BUILD.gn
++++ b/utils/gn/secondary/llvm/tools/llvm-cov/BUILD.gn
+@@ -1,6 +1,6 @@
+ executable("llvm-cov") {
+   deps = [
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Debuginfod",
+     "//llvm/lib/IR",
+     "//llvm/lib/Object",
+diff --git a/utils/gn/secondary/llvm/tools/llvm-objdump/BUILD.gn b/utils/gn/secondary/llvm/tools/llvm-objdump/BUILD.gn
+index c90c3243..567fad7e 100644
+--- a/utils/gn/secondary/llvm/tools/llvm-objdump/BUILD.gn
++++ b/utils/gn/secondary/llvm/tools/llvm-objdump/BUILD.gn
+@@ -41,7 +41,7 @@ executable("llvm-objdump") {
+   deps = [
+     ":ObjdumpOpts",
+     ":OtoolOpts",
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/CodeGen",
+     "//llvm/lib/DebugInfo/DWARF",
+     "//llvm/lib/DebugInfo/PDB",
+diff --git a/utils/gn/secondary/llvm/tools/opt/BUILD.gn b/utils/gn/secondary/llvm/tools/opt/BUILD.gn
+index 67940c61..46b9b6fb 100644
+--- a/utils/gn/secondary/llvm/tools/opt/BUILD.gn
++++ b/utils/gn/secondary/llvm/tools/opt/BUILD.gn
+@@ -1,6 +1,6 @@
+ executable("opt") {
+   deps = [
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/Analysis",
+     "//llvm/lib/Bitcode/Writer",
+     "//llvm/lib/CodeGen",
+diff --git a/utils/gn/secondary/llvm/unittests/ADT/BUILD.gn b/utils/gn/secondary/llvm/unittests/ADT/BUILD.gn
+index 10839550..c1687c83 100644
+--- a/utils/gn/secondary/llvm/unittests/ADT/BUILD.gn
++++ b/utils/gn/secondary/llvm/unittests/ADT/BUILD.gn
+@@ -5,7 +5,7 @@ unittest("ADTTests") {
+   # Also see note in //llvm/lib/Support/BUILD.gn.
+   deps = [
+     # Some tests include files from IR, but there's no library dependency.
+-    "//llvm/include/llvm/IR:public_tablegen",
++    "//include/llvm/IR:public_tablegen",
+     "//llvm/lib/Support",
+     "//llvm/lib/TargetParser",
+     "//llvm/lib/Testing/Support",
+diff --git a/utils/gn/secondary/llvm/unittests/Analysis/InlineAdvisorPlugin/BUILD.gn b/utils/gn/secondary/llvm/unittests/Analysis/InlineAdvisorPlugin/BUILD.gn
+index 96d7b36d..7b607de0 100644
+--- a/utils/gn/secondary/llvm/unittests/Analysis/InlineAdvisorPlugin/BUILD.gn
++++ b/utils/gn/secondary/llvm/unittests/Analysis/InlineAdvisorPlugin/BUILD.gn
+@@ -12,7 +12,7 @@ if (host_os != "win") {
+     deps = [
+       # TestPlugin doesn't want to link in any LLVM code, it just needs its
+       # headers.
+-      "//llvm/include/llvm/IR:public_tablegen",
++      "//include/llvm/IR:public_tablegen",
+     ]
+ 
+     if (host_os != "mac" && host_os != "win") {
+diff --git a/utils/gn/secondary/llvm/unittests/Analysis/InlineOrderPlugin/BUILD.gn b/utils/gn/secondary/llvm/unittests/Analysis/InlineOrderPlugin/BUILD.gn
+index 0c5c0c5c..289e38f9 100644
+--- a/utils/gn/secondary/llvm/unittests/Analysis/InlineOrderPlugin/BUILD.gn
++++ b/utils/gn/secondary/llvm/unittests/Analysis/InlineOrderPlugin/BUILD.gn
+@@ -10,7 +10,7 @@ if (host_os != "win") {
+     deps = [
+       # TestPlugin doesn't want to link in any LLVM code, it just needs its
+       # headers.
+-      "//llvm/include/llvm/IR:public_tablegen",
++      "//include/llvm/IR:public_tablegen",
+     ]
+ 
+     if (host_os != "mac" && host_os != "win") {
+diff --git a/utils/gn/secondary/llvm/unittests/Passes/PassBuilderBindings/BUILD.gn b/utils/gn/secondary/llvm/unittests/Passes/PassBuilderBindings/BUILD.gn
+index 1a1a6dfe..c67e1c82 100644
+--- a/utils/gn/secondary/llvm/unittests/Passes/PassBuilderBindings/BUILD.gn
++++ b/utils/gn/secondary/llvm/unittests/Passes/PassBuilderBindings/BUILD.gn
+@@ -1,7 +1,7 @@
+ import("//third-party/unittest/unittest.gni")
+ unittest("PassesBindingsTests") {
+   deps = [
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/IR",
+     "//llvm/lib/Passes",
+     "//llvm/lib/Support",
+diff --git a/utils/gn/secondary/llvm/unittests/Passes/Plugins/BUILD.gn b/utils/gn/secondary/llvm/unittests/Passes/Plugins/BUILD.gn
+index c6567e1a..900d7300 100644
+--- a/utils/gn/secondary/llvm/unittests/Passes/Plugins/BUILD.gn
++++ b/utils/gn/secondary/llvm/unittests/Passes/Plugins/BUILD.gn
+@@ -1,7 +1,7 @@
+ import("//third-party/unittest/unittest.gni")
+ unittest("PluginsTests") {
+   deps = [
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/IR",
+     "//llvm/lib/Passes",
+     "//llvm/lib/Support",
+diff --git a/utils/gn/secondary/llvm/unittests/Passes/Plugins/DoublerPlugin/BUILD.gn b/utils/gn/secondary/llvm/unittests/Passes/Plugins/DoublerPlugin/BUILD.gn
+index fcf13b44..c63506a5 100644
+--- a/utils/gn/secondary/llvm/unittests/Passes/Plugins/DoublerPlugin/BUILD.gn
++++ b/utils/gn/secondary/llvm/unittests/Passes/Plugins/DoublerPlugin/BUILD.gn
+@@ -9,7 +9,7 @@ loadable_module("DoublerPlugin") {
+   deps = [
+     # DoublerPlugin doesn't want to link in any LLVM code, it just needs its
+     # headers.
+-    "//llvm/include/llvm/IR:public_tablegen",
++    "//include/llvm/IR:public_tablegen",
+   ]
+ 
+   if (host_os != "mac" && host_os != "win") {
+diff --git a/utils/gn/secondary/llvm/unittests/Passes/Plugins/TestPlugin/BUILD.gn b/utils/gn/secondary/llvm/unittests/Passes/Plugins/TestPlugin/BUILD.gn
+index d6580d47..4649bf7d 100644
+--- a/utils/gn/secondary/llvm/unittests/Passes/Plugins/TestPlugin/BUILD.gn
++++ b/utils/gn/secondary/llvm/unittests/Passes/Plugins/TestPlugin/BUILD.gn
+@@ -9,7 +9,7 @@ loadable_module("TestPlugin") {
+   deps = [
+     # TestPlugin doesn't want to link in any LLVM code, it just needs its
+     # headers.
+-    "//llvm/include/llvm/IR:public_tablegen",
++    "//include/llvm/IR:public_tablegen",
+   ]
+ 
+   if (host_os != "mac" && host_os != "win") {
+diff --git a/utils/gn/secondary/llvm/unittests/Support/DynamicLibrary/BUILD.gn b/utils/gn/secondary/llvm/unittests/Support/DynamicLibrary/BUILD.gn
+index dd82c3be..ea93006c 100644
+--- a/utils/gn/secondary/llvm/unittests/Support/DynamicLibrary/BUILD.gn
++++ b/utils/gn/secondary/llvm/unittests/Support/DynamicLibrary/BUILD.gn
+@@ -32,7 +32,7 @@ unittest("DynamicLibraryTests") {
+   deps = [
+     ":PipSqueak",
+     ":SecondLib",
+-    "//llvm/include/llvm/Config:config",
++    "//include/llvm/Config:config",
+     "//llvm/lib/Support",
+   ]
+   sources = [
+diff --git a/utils/gn/secondary/llvm/unittests/tools/llvm-profgen/BUILD.gn b/utils/gn/secondary/llvm/unittests/tools/llvm-profgen/BUILD.gn
+index b53b84d8..16088afe 100644
+--- a/utils/gn/secondary/llvm/unittests/tools/llvm-profgen/BUILD.gn
++++ b/utils/gn/secondary/llvm/unittests/tools/llvm-profgen/BUILD.gn
+@@ -2,7 +2,7 @@ import("//third-party/unittest/unittest.gni")
+ 
+ unittest("LLVMProfgenTests") {
+   deps = [
+-    "//llvm/include/llvm/IR:public_tablegen",
++    "//include/llvm/IR:public_tablegen",
+     "//llvm/lib/Testing/Support",
+   ]
+   sources = [ "ContextCompressionTest.cpp" ]
+diff --git a/utils/gn/secondary/llvm/utils/TableGen/BUILD.gn b/utils/gn/secondary/llvm/utils/TableGen/BUILD.gn
+index 2033ef3e..716a6f34 100644
+--- a/utils/gn/secondary/llvm/utils/TableGen/BUILD.gn
++++ b/utils/gn/secondary/llvm/utils/TableGen/BUILD.gn
+@@ -22,7 +22,7 @@ executable("llvm-min-tblgen") {
+ executable("llvm-tblgen") {
+   deps = [
+     ":llvm-min-tblgen-sources",
+-    "//llvm/include/llvm/Config:llvm-config",
++    "//include/llvm/Config:llvm-config",
+     "//llvm/lib/CodeGen:CodeGenTypes",
+     "//llvm/lib/Support",
+     "//llvm/lib/TableGen",
+diff --git a/utils/gn/secondary/llvm/utils/TableGen/GlobalISel/BUILD.gn b/utils/gn/secondary/llvm/utils/TableGen/GlobalISel/BUILD.gn
+index 27a425b8..ebeef5fc 100644
+--- a/utils/gn/secondary/llvm/utils/TableGen/GlobalISel/BUILD.gn
++++ b/utils/gn/secondary/llvm/utils/TableGen/GlobalISel/BUILD.gn
+@@ -1,6 +1,6 @@
+ static_library("GlobalISel") {
+   deps = [
+-    "//llvm/include/llvm/CodeGen:GenVT",
++    "//include/llvm/CodeGen:GenVT",
+     "//llvm/lib/CodeGen:CodeGenTypes",
+     "//llvm/lib/Support",
+   ]
+diff --git a/utils/gn/secondary/llvm/utils/TableGen/tablegen.gni b/utils/gn/secondary/llvm/utils/TableGen/tablegen.gni
+index 21433642..f2038cde 100644
+--- a/utils/gn/secondary/llvm/utils/TableGen/tablegen.gni
++++ b/utils/gn/secondary/llvm/utils/TableGen/tablegen.gni
+@@ -61,7 +61,7 @@ template("tablegen") {
+              "--write-if-changed",
+ 
+              "-I",
+-             rebase_path("//llvm/include", root_build_dir),
++             rebase_path("//include", root_build_dir),
+ 
+              # FIXME: Rather than duplicating this -I flag in both the CMake and
+              # the gn build, let tablegen add input dir to include search path

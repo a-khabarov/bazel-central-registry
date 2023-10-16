@@ -1,0 +1,18 @@
+{
+    "url": "https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.2/llvm-17.0.2.src.tar.xz",
+    "integrity": "sha256-Yd2eqh+HShClHcOXuEmY6uvdPFWlpfpsJLIIGkNbR8Y=",
+    "strip_prefix": "llvm-17.0.2.src",
+    "patches": {
+        "0001-Add-Bazel-files-to-.gitignore.patch": "sha256-l1O1MPF7hQhGI2pWJXNbOq9aOC5A3c15D6uDXRK/Z1E=",
+        "0002-Add-LLVM-Bazel-overlay-files.patch": "sha256-e/9kWv8rwwYRPy2KZ2ZTkCH2spZHpE1yAd0P+vvjZqM=",
+        "0003-Add-MODULE.bazel.patch": "sha256-0wmRjhX9VByjFp64HzWO9mt+ByKfeRyC57jm2SdNwRs=",
+        "0004-Copy-the-third-party-component.patch": "sha256-WVYSBRi0HT2RoKzExxYoVdvD227KRzg9Eh+yfs1qU28=",
+        "0005-Fix-LLVM-Core-labels-in-Bazel-files.patch": "sha256-5g1z0dljy/AgDP6CQy22YYuEFVi93leoGutwyyfp4E0=",
+        "0006-Fix-include-paths.patch": "sha256-hwwYmwVhrd40hVGnx6s5TxQoXbmM//5iR/xUE4NruK0=",
+        "0007-Add-Bazel-LLVM-targets.patch": "sha256-k91is8Qvf/4X+YOZCdEECLwL0n6X4Ny1YH+K3oIL7C8=",
+        "0008-Add-LLVM-version-vars.patch": "sha256-Ed6aND97auEWWE8RU9fbarODlHWvSzwsNMvgJ84SAPo=",
+        "0009-Guard-against-empty-workspace-root.patch": "sha256-r4blSrnTf3Bd+siVfkOk0iLoT8bWSX5JZhXJrqbrV6I=",
+        "0010-Disable-zlib-zstd-and-pfm.patch": "sha256-zCllk5dsOfmGAVQA9ndhRg3VJStOkAFW1AQjjjwIXLI="
+    },
+    "patch_strip": 1
+}

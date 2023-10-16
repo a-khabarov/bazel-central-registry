@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Alexander Khabarov <alexander.khabarov@arm.com>
+Date: Mon, 16 Oct 2023 17:02:09 +0000
+Subject: [PATCH] Add LLVM version vars
+
+The repository configuration step of the overlay generates the
+`vars.bzl`. We have to add it manually.
+---
+ vars.bzl | 4 ++++
+ 1 file changed, 4 insertions(+)
+ create mode 100644 vars.bzl
+
+diff --git a/vars.bzl b/vars.bzl
+new file mode 100644
+index 00000000..1e7d1423
+--- /dev/null
++++ b/vars.bzl
+@@ -0,0 +1,4 @@
++LLVM_VERSION = "17.0.2"
++LLVM_VERSION_MAJOR = 17
++LLVM_VERSION_MINOR = 0
++LLVM_VERSION_PATCH = 2

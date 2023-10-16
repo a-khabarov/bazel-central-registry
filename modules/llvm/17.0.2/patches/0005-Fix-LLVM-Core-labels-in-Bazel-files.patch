@@ -1,0 +1,839 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Alexander Khabarov <alexander.khabarov@arm.com>
+Date: Mon, 16 Oct 2023 14:57:21 +0000
+Subject: [PATCH] Fix LLVM Core labels in Bazel files
+
+This is needed because we moved the overlay.
+
+Each Bazel file is updated using `sed 's|//llvm\([^.]\)|//\1|g' -i`.
+---
+ BUILD.bazel                      |   2 +-
+ lit_test.bzl                     |   4 +-
+ tblgen.bzl                       |   2 +-
+ third-party/unittest/BUILD.bazel |   4 +-
+ unittests/BUILD.bazel            | 452 +++++++++++++++----------------
+ utils/lit/tests/BUILD.bazel      |  18 +-
+ 6 files changed, 241 insertions(+), 241 deletions(-)
+
+diff --git a/BUILD.bazel b/BUILD.bazel
+index a7e9398e..bcd21cd0 100644
+--- a/BUILD.bazel
++++ b/BUILD.bazel
+@@ -2949,7 +2949,7 @@ cc_library(
+ )
+ 
+ # A flag to pick which `pfm` to use for Exegesis.
+-# Usage: `--@llvm-project//llvm:pfm=<disable|external|system>`.
++# Usage: `--@llvm-project//:pfm=<disable|external|system>`.
+ # Flag documentation: https://bazel.build/extending/config
+ string_flag(
+     name = "pfm",
+diff --git a/lit_test.bzl b/lit_test.bzl
+index ce2a0a00..e2865851 100644
+--- a/lit_test.bzl
++++ b/lit_test.bzl
+@@ -30,8 +30,8 @@ def lit_test(
+ 
+     native.py_test(
+         name = name,
+-        srcs = [Label("//llvm:lit")],
+-        main = Label("//llvm:utils/lit/lit.py"),
++        srcs = [Label("//:lit")],
++        main = Label("//:utils/lit/lit.py"),
+         args = args + ["-v"] + ["$(execpath %s)" % src for src in srcs],
+         data = data + srcs,
+         legacy_create_init = False,
+diff --git a/tblgen.bzl b/tblgen.bzl
+index d4339091..ff5a18b4 100644
+--- a/tblgen.bzl
++++ b/tblgen.bzl
+@@ -35,7 +35,7 @@ def gentbl(
+       tblgen_args: Extra arguments string to pass to the tblgen binary.
+       **kwargs: Keyword arguments to pass to subsidiary cc_library() rule.
+     """
+-    llvm_project_execroot_path = Label("//llvm:tblgen.bzl").workspace_root
++    llvm_project_execroot_path = Label("//:tblgen.bzl").workspace_root
+ 
+     if td_file not in td_srcs:
+         td_srcs += [td_file]
+diff --git a/third-party/unittest/BUILD.bazel b/third-party/unittest/BUILD.bazel
+index 2a6b8105..15363f3b 100644
+--- a/third-party/unittest/BUILD.bazel
++++ b/third-party/unittest/BUILD.bazel
+@@ -73,7 +73,7 @@ cc_library(
+     ],
+     deps = [
+         ":gtest_internal_headers",
+-        "//llvm:Support",
++        "//:Support",
+     ],
+ )
+ 
+@@ -85,7 +85,7 @@ cc_library(
+     deps = [
+         ":gmock",
+         ":gtest",
+-        "//llvm:Support",
++        "//:Support",
+     ],
+ )
+ 
+diff --git a/unittests/BUILD.bazel b/unittests/BUILD.bazel
+index 0355a789..c3168051 100644
+--- a/unittests/BUILD.bazel
++++ b/unittests/BUILD.bazel
+@@ -2,7 +2,7 @@
+ # See https://llvm.org/LICENSE.txt for license information.
+ # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+ 
+-load("//llvm:tblgen.bzl", "gentbl")
++load("//:tblgen.bzl", "gentbl")
+ 
+ package(
+     default_visibility = ["//visibility:public"],
+@@ -23,9 +23,9 @@ cc_test(
+     ),
+     shard_count = 20,
+     deps = [
+-        "//llvm:Core",
+-        "//llvm:Support",
+-        "//llvm:TestingSupport",
++        "//:Core",
++        "//:Support",
++        "//:TestingSupport",
+         "//third-party/unittest:gmock",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+@@ -46,16 +46,16 @@ cc_test(
+         ],
+     ),
+     deps = [
+-        "//llvm:Analysis",
+-        "//llvm:AsmParser",
+-        "//llvm:Core",
+-        "//llvm:Passes",
+-        "//llvm:Support",
+-        "//llvm:TargetParser",
+-        "//llvm:TestingSupport",
+-        "//llvm:TransformUtils",
+-        "//llvm:attributes_gen",
+-        "//llvm:config",
++        "//:Analysis",
++        "//:AsmParser",
++        "//:Core",
++        "//:Passes",
++        "//:Support",
++        "//:TargetParser",
++        "//:TestingSupport",
++        "//:TransformUtils",
++        "//:attributes_gen",
++        "//:config",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -69,9 +69,9 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:AsmParser",
+-        "//llvm:Core",
+-        "//llvm:Support",
++        "//:AsmParser",
++        "//:Core",
++        "//:Support",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -88,11 +88,11 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:AsmParser",
+-        "//llvm:BitReader",
+-        "//llvm:BitWriter",
+-        "//llvm:Core",
+-        "//llvm:Support",
++        "//:AsmParser",
++        "//:BitReader",
++        "//:BitWriter",
++        "//:Core",
++        "//:Support",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -106,9 +106,9 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:BitstreamReader",
+-        "//llvm:BitstreamWriter",
+-        "//llvm:Support",
++        "//:BitstreamReader",
++        "//:BitstreamWriter",
++        "//:Support",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -135,19 +135,19 @@ cc_test(
+     features = ["-layering_check"],  # #include "../lib/CodeGen/AllocationOrder.h"
+     deps = [
+         ":codegen_tests_includes",
+-        "//llvm:AllTargetsAsmParsers",
+-        "//llvm:AllTargetsCodeGens",
+-        "//llvm:Analysis",
+-        "//llvm:AsmParser",
+-        "//llvm:BinaryFormat",
+-        "//llvm:CodeGen",
+-        "//llvm:CodeGenTypes",
+-        "//llvm:Core",
+-        "//llvm:MC",
+-        "//llvm:Passes",
+-        "//llvm:Support",
+-        "//llvm:Target",
+-        "//llvm:TestingSupport",
++        "//:AllTargetsAsmParsers",
++        "//:AllTargetsCodeGens",
++        "//:Analysis",
++        "//:AsmParser",
++        "//:BinaryFormat",
++        "//:CodeGen",
++        "//:CodeGenTypes",
++        "//:Core",
++        "//:MC",
++        "//:Passes",
++        "//:Support",
++        "//:Target",
++        "//:TestingSupport",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -167,15 +167,15 @@ cc_test(
+         "$(STACK_FRAME_UNLIMITED)",
+     ],
+     deps = [
+-        "//llvm:AllTargetsAsmParsers",
+-        "//llvm:AllTargetsCodeGens",
+-        "//llvm:CodeGen",
+-        "//llvm:CodeGenTypes",
+-        "//llvm:Core",
+-        "//llvm:FileCheckLib",
+-        "//llvm:MC",
+-        "//llvm:Support",
+-        "//llvm:Target",
++        "//:AllTargetsAsmParsers",
++        "//:AllTargetsCodeGens",
++        "//:CodeGen",
++        "//:CodeGenTypes",
++        "//:Core",
++        "//:FileCheckLib",
++        "//:MC",
++        "//:Support",
++        "//:Target",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -201,21 +201,21 @@ cc_test(
+     ],
+     features = ["-layering_check"],  # #include "../lib/CodeGen/AsmPrinter/DwarfStringPool.h"
+     deps = [
+-        "//llvm:AllTargetsAsmParsers",
+-        "//llvm:AllTargetsCodeGens",
+-        "//llvm:BinaryFormat",
+-        "//llvm:CodeGenTypes",
+-        "//llvm:Core",
+-        "//llvm:DebugInfo",
+-        "//llvm:DebugInfoDWARF",
+-        "//llvm:DebugInfoPDB",
+-        "//llvm:MC",
+-        "//llvm:Object",
+-        "//llvm:ObjectYAML",
+-        "//llvm:Support",
+-        "//llvm:Target",
+-        "//llvm:TestingSupport",
+-        "//llvm:config",
++        "//:AllTargetsAsmParsers",
++        "//:AllTargetsCodeGens",
++        "//:BinaryFormat",
++        "//:CodeGenTypes",
++        "//:Core",
++        "//:DebugInfo",
++        "//:DebugInfoDWARF",
++        "//:DebugInfoPDB",
++        "//:MC",
++        "//:Object",
++        "//:ObjectYAML",
++        "//:Support",
++        "//:Target",
++        "//:TestingSupport",
++        "//:config",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -225,9 +225,9 @@ cc_test(
+     name = "debuginfod_tests",
+     srcs = glob(["Debuginfod/*.cpp"]),
+     deps = [
+-        "//llvm:Debuginfod",
+-        "//llvm:Support",
+-        "//llvm:TestingSupport",
++        "//:Debuginfod",
++        "//:Support",
++        "//:TestingSupport",
+         "//third-party/unittest:gmock",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+@@ -242,12 +242,12 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:AllTargetsCodeGens",
+-        "//llvm:AsmParser",
+-        "//llvm:Core",
+-        "//llvm:ExecutionEngine",
+-        "//llvm:Interpreter",
+-        "//llvm:Support",
++        "//:AllTargetsCodeGens",
++        "//:AsmParser",
++        "//:Core",
++        "//:ExecutionEngine",
++        "//:Interpreter",
++        "//:Support",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -267,18 +267,18 @@ cc_test(
+         "$(STACK_FRAME_UNLIMITED)",
+     ],
+     deps = [
+-        "//llvm:AllTargetsCodeGens",
+-        "//llvm:Analysis",
+-        "//llvm:AsmParser",
+-        "//llvm:Core",
+-        "//llvm:ExecutionEngine",
+-        "//llvm:MC",
+-        "//llvm:MCJIT",
+-        "//llvm:Passes",
+-        "//llvm:Support",
+-        "//llvm:Target",
+-        "//llvm:TargetParser",
+-        "//llvm:config",
++        "//:AllTargetsCodeGens",
++        "//:Analysis",
++        "//:AsmParser",
++        "//:Core",
++        "//:ExecutionEngine",
++        "//:MC",
++        "//:MCJIT",
++        "//:Passes",
++        "//:Support",
++        "//:Target",
++        "//:TargetParser",
++        "//:config",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -296,22 +296,22 @@ cc_test(
+     ),
+     args = ["--gtest_filter=-ObjectLinkingLayerTest.TestSetProcessAllSections"],
+     deps = [
+-        "//llvm:AllTargetsAsmParsers",
+-        "//llvm:AllTargetsCodeGens",
+-        "//llvm:AsmParser",
+-        "//llvm:Core",
+-        "//llvm:ExecutionEngine",
+-        "//llvm:IRReader",
+-        "//llvm:JITLink",
+-        "//llvm:MC",
+-        "//llvm:Object",
+-        "//llvm:OrcJIT",
+-        "//llvm:OrcShared",
+-        "//llvm:OrcTargetProcess",
+-        "//llvm:Support",
+-        "//llvm:TargetParser",
+-        "//llvm:TestingSupport",
+-        "//llvm:config",
++        "//:AllTargetsAsmParsers",
++        "//:AllTargetsCodeGens",
++        "//:AsmParser",
++        "//:Core",
++        "//:ExecutionEngine",
++        "//:IRReader",
++        "//:JITLink",
++        "//:MC",
++        "//:Object",
++        "//:OrcJIT",
++        "//:OrcShared",
++        "//:OrcTargetProcess",
++        "//:Support",
++        "//:TargetParser",
++        "//:TestingSupport",
++        "//:config",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -326,9 +326,9 @@ cc_test(
+     ),
+     features = ["-layering_check"],  # #include "../lib/FileCheck/FileCheckImpl.h"
+     deps = [
+-        "//llvm:FileCheckLib",
+-        "//llvm:Support",
+-        "//llvm:TestingSupport",
++        "//:FileCheckLib",
++        "//:Support",
++        "//:TestingSupport",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -348,17 +348,17 @@ cc_test(
+     ),
+     shard_count = 20,
+     deps = [
+-        "//llvm:Analysis",
+-        "//llvm:AsmParser",
+-        "//llvm:BinaryFormat",
+-        "//llvm:CodeGen",
+-        "//llvm:Core",
+-        "//llvm:Passes",
+-        "//llvm:Scalar",
+-        "//llvm:Support",
+-        "//llvm:TestingSupport",
+-        "//llvm:TransformUtils",
+-        "//llvm:config",
++        "//:Analysis",
++        "//:AsmParser",
++        "//:BinaryFormat",
++        "//:CodeGen",
++        "//:Core",
++        "//:Passes",
++        "//:Scalar",
++        "//:Support",
++        "//:TestingSupport",
++        "//:TransformUtils",
++        "//:config",
+         "//third-party/unittest:gmock",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+@@ -373,8 +373,8 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:LineEditor",
+-        "//llvm:Support",
++        "//:LineEditor",
++        "//:Support",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -388,14 +388,14 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:Analysis",
+-        "//llvm:Core",
+-        "//llvm:FrontendOpenACC",
+-        "//llvm:FrontendOpenMP",
+-        "//llvm:Passes",
+-        "//llvm:Support",
+-        "//llvm:TargetParser",
+-        "//llvm:TransformUtils",
++        "//:Analysis",
++        "//:Core",
++        "//:FrontendOpenACC",
++        "//:FrontendOpenMP",
++        "//:Passes",
++        "//:Support",
++        "//:TargetParser",
++        "//:TransformUtils",
+         "//third-party/unittest:gmock",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+@@ -410,10 +410,10 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:AsmParser",
+-        "//llvm:Core",
+-        "//llvm:Linker",
+-        "//llvm:Support",
++        "//:AsmParser",
++        "//:Core",
++        "//:Linker",
++        "//:Support",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -427,14 +427,14 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:AllTargetsCodeGens",
+-        "//llvm:AllTargetsDisassemblers",
+-        "//llvm:BinaryFormat",
+-        "//llvm:MC",
+-        "//llvm:MCDisassembler",
+-        "//llvm:Object",
+-        "//llvm:Support",
+-        "//llvm:Target",
++        "//:AllTargetsCodeGens",
++        "//:AllTargetsDisassemblers",
++        "//:BinaryFormat",
++        "//:MC",
++        "//:MCDisassembler",
++        "//:Object",
++        "//:Support",
++        "//:Target",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -449,14 +449,14 @@ cc_test(
+     ),
+     features = ["-layering_check"],  # #include "../lib/CodeGen/RegisterCoalescer.h"
+     deps = [
+-        "//llvm:AllTargetsAsmParsers",
+-        "//llvm:AllTargetsCodeGens",
+-        "//llvm:CodeGen",
+-        "//llvm:CodeGenTypes",
+-        "//llvm:Core",
+-        "//llvm:MC",
+-        "//llvm:Support",
+-        "//llvm:Target",
++        "//:AllTargetsAsmParsers",
++        "//:AllTargetsCodeGens",
++        "//:CodeGen",
++        "//:CodeGenTypes",
++        "//:Core",
++        "//:MC",
++        "//:Support",
++        "//:Target",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -469,11 +469,11 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:ObjCopy",
+-        "//llvm:Object",
+-        "//llvm:ObjectYAML",
+-        "//llvm:Support",
+-        "//llvm:TestingSupport",
++        "//:ObjCopy",
++        "//:Object",
++        "//:ObjectYAML",
++        "//:Support",
++        "//:TestingSupport",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -487,12 +487,12 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:BinaryFormat",
+-        "//llvm:Object",
+-        "//llvm:ObjectYAML",
+-        "//llvm:Support",
+-        "//llvm:TargetParser",
+-        "//llvm:TestingSupport",
++        "//:BinaryFormat",
++        "//:Object",
++        "//:ObjectYAML",
++        "//:Support",
++        "//:TargetParser",
++        "//:TestingSupport",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -506,11 +506,11 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:DebugInfoCodeView",
+-        "//llvm:Object",
+-        "//llvm:ObjectYAML",
+-        "//llvm:Support",
+-        "//llvm:TestingSupport",
++        "//:DebugInfoCodeView",
++        "//:Object",
++        "//:ObjectYAML",
++        "//:Support",
++        "//:TestingSupport",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -523,10 +523,10 @@ gentbl(
+         "-gen-opt-parser-defs",
+         "Option/Opts.inc",
+     )],
+-    tblgen = "//llvm:llvm-tblgen",
++    tblgen = "//:llvm-tblgen",
+     td_file = "Option/Opts.td",
+     td_srcs = [
+-        "//llvm:include/llvm/Option/OptParser.td",
++        "//:include/llvm/Option/OptParser.td",
+     ],
+ )
+ 
+@@ -537,9 +537,9 @@ gentbl(
+         "-gen-automata",
+         "TableGen/AutomataAutomata.inc",
+     )],
+-    tblgen = "//llvm:llvm-tblgen",
++    tblgen = "//:llvm-tblgen",
+     td_file = "TableGen/Automata.td",
+-    td_srcs = ["//llvm:common_target_td_sources"] + [
++    td_srcs = ["//:common_target_td_sources"] + [
+         "TableGen/Automata.td",
+     ],
+ )
+@@ -551,9 +551,9 @@ gentbl(
+         "-gen-searchable-tables",
+         "TableGen/AutomataTables.inc",
+     )],
+-    tblgen = "//llvm:llvm-tblgen",
++    tblgen = "//:llvm-tblgen",
+     td_file = "TableGen/Automata.td",
+-    td_srcs = ["//llvm:common_target_td_sources"] + [
++    td_srcs = ["//:common_target_td_sources"] + [
+         "TableGen/Automata.td",
+     ],
+ )
+@@ -567,8 +567,8 @@ cc_test(
+     ),
+     deps = [
+         ":option_tests_gen",
+-        "//llvm:Option",
+-        "//llvm:Support",
++        "//:Option",
++        "//:Support",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -582,10 +582,10 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:BitReader",
+-        "//llvm:Remarks",
+-        "//llvm:Support",
+-        "//llvm:remark_linker",
++        "//:BitReader",
++        "//:Remarks",
++        "//:Support",
++        "//:remark_linker",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -599,14 +599,14 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:Core",
+-        "//llvm:Coverage",
+-        "//llvm:DebugInfo",
+-        "//llvm:Object",
+-        "//llvm:ProfileData",
+-        "//llvm:Support",
+-        "//llvm:Symbolize",
+-        "//llvm:TestingSupport",
++        "//:Core",
++        "//:Coverage",
++        "//:DebugInfo",
++        "//:Object",
++        "//:ProfileData",
++        "//:Support",
++        "//:Symbolize",
++        "//:TestingSupport",
+         "//third-party/unittest:gmock",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+@@ -636,14 +636,14 @@ cc_test(
+         "local",  # Not compatible with the sandbox on MacOS
+     ],
+     deps = [
+-        "//llvm:AllTargetsCodeGens",
+-        "//llvm:BinaryFormat",
+-        "//llvm:Core",
+-        "//llvm:ProfileData",
+-        "//llvm:Support",
+-        "//llvm:TargetParser",
+-        "//llvm:TestingSupport",
+-        "//llvm:config",
++        "//:AllTargetsCodeGens",
++        "//:BinaryFormat",
++        "//:Core",
++        "//:ProfileData",
++        "//:Support",
++        "//:TargetParser",
++        "//:TestingSupport",
++        "//:config",
+         "//third-party/unittest:gmock",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+@@ -659,9 +659,9 @@ cc_test(
+     ],
+     linkstatic = 1,
+     deps = [
+-        "//llvm:AllTargetsCodeGens",
+-        "//llvm:Support",
+-        "//llvm:config",
++        "//:AllTargetsCodeGens",
++        "//:Support",
++        "//:config",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -679,9 +679,9 @@ cc_test(
+     deps = [
+         ":automata_automata_gen",
+         ":automata_tables_gen",
+-        "//llvm:Support",
+-        "//llvm:TableGen",
+-        "//llvm:TableGenGlobalISel",
++        "//:Support",
++        "//:TableGen",
++        "//:TableGenGlobalISel",
+         "//third-party/unittest:gmock",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+@@ -700,15 +700,15 @@ cc_test(
+     ],
+     features = ["-layering_check"],  # #include "AArch64GenInstrInfo.inc"
+     deps = [
+-        "//llvm:AArch64CodeGen",
+-        "//llvm:AArch64UtilsAndDesc",
+-        "//llvm:AsmParser",
+-        "//llvm:CodeGen",
+-        "//llvm:CodeGenTypes",
+-        "//llvm:Core",
+-        "//llvm:MC",
+-        "//llvm:Support",
+-        "//llvm:Target",
++        "//:AArch64CodeGen",
++        "//:AArch64UtilsAndDesc",
++        "//:AsmParser",
++        "//:CodeGen",
++        "//:CodeGenTypes",
++        "//:Core",
++        "//:MC",
++        "//:Support",
++        "//:Target",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -724,8 +724,8 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:Support",
+-        "//llvm:TestingADT",
++        "//:Support",
++        "//:TestingADT",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -743,16 +743,16 @@ cc_test(
+         allow_empty = False,
+     ),
+     deps = [
+-        "//llvm:Analysis",
+-        "//llvm:AsmParser",
+-        "//llvm:Core",
+-        "//llvm:IPO",
+-        "//llvm:IRReader",
+-        "//llvm:Passes",
+-        "//llvm:Support",
+-        "//llvm:TestingSupport",
+-        "//llvm:TransformUtils",
+-        "//llvm:Vectorize",
++        "//:Analysis",
++        "//:AsmParser",
++        "//:Core",
++        "//:IPO",
++        "//:IRReader",
++        "//:Passes",
++        "//:Support",
++        "//:TestingSupport",
++        "//:TransformUtils",
++        "//:Vectorize",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+     ],
+@@ -773,18 +773,18 @@ cc_test(
+     ],
+     includes = ["tools/llvm-exegesis"],
+     deps = [
+-        "//llvm:AllTargetsCodeGens",
+-        "//llvm:AllTargetsDisassemblers",
+-        "//llvm:CodeGen",
+-        "//llvm:CodeGenTypes",
+-        "//llvm:Exegesis",
+-        "//llvm:MC",
+-        "//llvm:MCDisassembler",
+-        "//llvm:Support",
+-        "//llvm:TargetParser",
+-        "//llvm:TestingSupport",
+-        "//llvm:X86CodeGen",
+-        "//llvm:X86UtilsAndDesc",
++        "//:AllTargetsCodeGens",
++        "//:AllTargetsDisassemblers",
++        "//:CodeGen",
++        "//:CodeGenTypes",
++        "//:Exegesis",
++        "//:MC",
++        "//:MCDisassembler",
++        "//:Support",
++        "//:TargetParser",
++        "//:TestingSupport",
++        "//:X86CodeGen",
++        "//:X86UtilsAndDesc",
+         "//third-party/unittest:gmock",
+         "//third-party/unittest:gtest",
+         "//third-party/unittest:gtest_main",
+diff --git a/utils/lit/tests/BUILD.bazel b/utils/lit/tests/BUILD.bazel
+index b9e0a2e1..cd4dbe96 100644
+--- a/utils/lit/tests/BUILD.bazel
++++ b/utils/lit/tests/BUILD.bazel
+@@ -3,7 +3,7 @@
+ # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+ 
+ load("@bazel_skylib//rules:expand_template.bzl", "expand_template")
+-load("//llvm:lit_test.bzl", "lit_test", "package_path")
++load("//:lit_test.bzl", "lit_test", "package_path")
+ 
+ expand_template(
+     name = "lit_site_cfg",
+@@ -11,10 +11,10 @@ expand_template(
+     out = "lit.site.cfg",
+     substitutions = {
+         "@LIT_SITE_CFG_IN_HEADER@": "# Autogenerated, do not edit.",
+-        "@LLVM_LIT_TOOLS_DIR@": package_path("//llvm/utils/lit:BUILD"),
+-        "@LLVM_SOURCE_DIR@": package_path("//llvm:BUILD"),
+-        "@LLVM_BINARY_DIR@": package_path("//llvm:BUILD"),
+-        "@LLVM_TOOLS_DIR@": package_path("//llvm:BUILD"),
++        "@LLVM_LIT_TOOLS_DIR@": package_path("///utils/lit:BUILD"),
++        "@LLVM_SOURCE_DIR@": package_path("//:BUILD"),
++        "@LLVM_BINARY_DIR@": package_path("//:BUILD"),
++        "@LLVM_TOOLS_DIR@": package_path("//:BUILD"),
+     },
+     template = "lit.site.cfg.in",
+ )
+@@ -23,14 +23,14 @@ expand_template(
+     lit_test(
+         name = "%s.test" % src,
+         srcs = [src],
+-        args = ["--path %s" % package_path("//llvm:BUILD")],
++        args = ["--path %s" % package_path("//:BUILD")],
+         data = [
+             "check-tested-lit-timeout-ability",
+             "lit.cfg",
+             "lit.site.cfg",
+-            "//llvm:FileCheck",
+-            "//llvm:count",
+-            "//llvm:not",
++            "//:FileCheck",
++            "//:count",
++            "//:not",
+         ] + glob(["Inputs/**"]),
+     )
+     for src in glob(["*/*.py"])

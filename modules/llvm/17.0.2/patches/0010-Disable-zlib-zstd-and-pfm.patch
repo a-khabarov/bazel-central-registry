@@ -1,0 +1,40 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Alexander Khabarov <alexander.khabarov@arm.com>
+Date: Mon, 16 Oct 2023 16:54:37 +0000
+Subject: [PATCH] Disable `zlib`, `zstd` and `pfm`
+
+`zlib`, `zstd` and `pfm` are optional dependencies.
+---
+ BUILD.bazel | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
+
+diff --git a/BUILD.bazel b/BUILD.bazel
+index bcd21cd0..b5a5f69d 100644
+--- a/BUILD.bazel
++++ b/BUILD.bazel
+@@ -285,14 +285,8 @@ cc_library(
+     deps = [
+         ":config",
+         ":Demangle",
+-        # We unconditionally depend on the custom LLVM zlib wrapper. This will
+-        # be an empty library unless zlib is enabled, in which case it will
+-        # both provide the necessary dependencies and configuration defines.
+-        "@llvm_zlib//:zlib",
+-        # We unconditionally depend on the custom LLVM zstd wrapper. This will
+-        # be an empty library unless zstd is enabled, in which case it will
+-        # both provide the necessary dependencies and configuration defines.
+-        "@llvm_zstd//:zstd",
++        # "@llvm_zlib//:zlib",
++        # "@llvm_zstd//:zstd",
+     ],
+ )
+ 
+@@ -2953,7 +2947,7 @@ cc_library(
+ # Flag documentation: https://bazel.build/extending/config
+ string_flag(
+     name = "pfm",
+-    build_setting_default = "external",
++    build_setting_default = "disable",
+     values = [
+         "disable",  # Don't include pfm at all
+         "external",  # Build pfm from source
